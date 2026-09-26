@@ -1,0 +1,22 @@
+name: LobbySystem
+version: '1.0-SNAPSHOT'
+
+main: de.zcreeper.lobbysystem.LobbySystem
+api-version: '1.21.11'
+load: POSTWORLD
+
+commands:
+  setspawn:
+    description: Setzt den Lobby-Spawn auf deine aktuelle Position.
+    usage: /setspawn
+  spawn:
+    description: Teleportiert dich zum Lobby-Spawn.
+    usage: /spawn
+
+permissions:
+  lobbysystem.setspawn:
+    description: Erlaubt das Setzen des Lobby-Spawns.
+    default: op
+  lobbysystem.bypass:
+    description: Umgeht den Lobby-Schutz.
+    default: op

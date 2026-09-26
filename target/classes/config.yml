@@ -1,0 +1,12 @@
+spawn: {}
+
+teleporter:
+  gemrush: ''
+  murdermystery: ''
+
+jumppad:
+  strength: 1.5
+  height: 0.8
+
+scoreboard:
+  ip: 'teamcastle.de'
