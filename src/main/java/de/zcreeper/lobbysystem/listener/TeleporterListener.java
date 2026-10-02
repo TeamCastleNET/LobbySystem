@@ -36,11 +36,21 @@ public class TeleporterListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (event.getClickedInventory() != event.getInventory()) return;
 
-        switch (event.getSlot()) {
-            case TeleporterInventory.SLOT_SPAWN -> teleportToSpawn(player);
-            case TeleporterInventory.SLOT_GEMRUSH -> connect(player, "gemrush", "§aGemRush");
-            case TeleporterInventory.SLOT_MURDERMYSTERY -> connect(player, "murdermystery", "§cMurderMystery");
-            default -> {
+        if (event.isLeftClick()) {
+            switch (event.getSlot()) {
+                case TeleporterInventory.SLOT_SPAWN -> teleportToSpawn(player);
+                case TeleporterInventory.SLOT_GEMRUSH -> connect(player, "gemrush", "§aGemRush");
+                case TeleporterInventory.SLOT_LAVABATTLE -> connect(player, "murdermystery", "§cMurderMystery");
+                default -> {
+                }
+            }
+        }
+
+        if (event.isRightClick()) {
+            switch (event.getSlot()) {
+                case TeleporterInventory.SLOT_SPAWN -> teleportToSpawn(player);
+                case TeleporterInventory.SLOT_GEMRUSH -> message(player);
+                case TeleporterInventory.SLOT_LAVABATTLE -> message(player);
             }
         }
     }
@@ -67,6 +77,11 @@ public class TeleporterListener implements Listener {
 
         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
         player.sendMessage(LobbySystem.getPrefix() + "§7Du wirst zu " + displayName + " §7verbunden...");
+    }
+
+    private void message(Player player) {
+        player.closeInventory();
+        player.sendMessage(LobbySystem.getPrefix() + "§cDiese Funktion ist noch in Arbeit.");
     }
 
 }

@@ -2,11 +2,11 @@ spawn: {}
 
 teleporter:
   gemrush: ''
-  murdermystery: ''
+  lavabattle: ''
 
 jumppad:
   strength: 1.5
   height: 0.8
 
 scoreboard:
-  ip: 'teamcastle.de'
+  ip: 'teamcastle.net'

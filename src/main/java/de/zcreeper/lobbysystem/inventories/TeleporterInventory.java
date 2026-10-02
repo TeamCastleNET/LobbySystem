@@ -17,7 +17,7 @@ public class TeleporterInventory implements InventoryHolder {
 
     public static final int SLOT_GEMRUSH = 20;
     public static final int SLOT_SPAWN = 22;
-    public static final int SLOT_MURDERMYSTERY = 24;
+    public static final int SLOT_LAVABATTLE = 24;
 
     private static final int[] BUTTON_SLOTS = {0, 8, 36, 44};
 
@@ -46,7 +46,7 @@ public class TeleporterInventory implements InventoryHolder {
 
         inventory.setItem(SLOT_GEMRUSH, new ItemBuilder(Material.EMERALD).displayname("§aGemRush").build());
         inventory.setItem(SLOT_SPAWN, new ItemBuilder(Material.NETHER_STAR).displayname("§6Spawn").build());
-        inventory.setItem(SLOT_MURDERMYSTERY, new ItemBuilder(Material.CROSSBOW).displayname("§cMurderMystery").build());
+        inventory.setItem(SLOT_LAVABATTLE, new ItemBuilder(Material.LAVA_BUCKET).displayname("§dLavaBattle").build());
     }
 
     public static void open(Player player) {

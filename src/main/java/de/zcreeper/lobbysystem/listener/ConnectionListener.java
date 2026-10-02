@@ -33,6 +33,7 @@ public class ConnectionListener implements Listener {
         player.setFoodLevel(20);
         player.setMaxHealth(6);
         player.setHealth(6);
+        player.setLevel(2026);
 
         PlayerHider.handleJoin(player);
         ScoreboardManager.create(player);

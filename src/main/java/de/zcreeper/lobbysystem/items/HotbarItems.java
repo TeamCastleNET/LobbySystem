@@ -13,14 +13,20 @@ public class HotbarItems {
 
     private static final String TELEPORTER_ID = "teleporter";
     private static final String VISIBILITY_ID = "visibility";
+    private static final String COSMETIC_ID = "cosmetic";
 
     public static void getItems(Player player) {
         player.getInventory().setItem(4, getTeleporter());
+        player.getInventory().setItem(7, getCosmetics());
         player.getInventory().setItem(1, getVisibilityItem(false));
     }
 
     public static ItemStack getTeleporter() {
         return mark(new ItemBuilder(Material.NETHER_STAR).displayname("§6Teleporter").build(), TELEPORTER_ID);
+    }
+
+    public static ItemStack getCosmetics() {
+        return mark(new ItemBuilder(Material.TOTEM_OF_UNDYING).displayname("§6Cosmetics").build(), COSMETIC_ID);
     }
 
     public static ItemStack getVisibilityItem(boolean hiding) {

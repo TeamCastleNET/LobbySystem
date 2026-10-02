@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ScoreboardManager {
 
     private static final String TITLE = "§6§lTEAM§b§lCASTLE";
-    private static final String DEFAULT_IP = "teamcastle.de";
+    private static final String DEFAULT_IP = "teamcastle.net";
 
     private static final long UPDATE_INTERVAL = 20L;
 
@@ -58,14 +58,16 @@ public class ScoreboardManager {
     private static void update(FastBoard board) {
         board.updateLines(
                 "",
-                "§8▸ §7Coins",
-                "§f" + format(0),
+                "§6Rang:",
+                "§8» §cIn Arbeit",
                 " ",
-                "§8▸ §7Online",
-                "§f" + format(Bukkit.getOnlinePlayers().size()),
+                "§6Coins:",
+                "§8» §b" + format(0),
+                "",
+                "§6Online:",
+                "§8» §b" + format(Bukkit.getOnlinePlayers().size()),
                 "  ",
-                "§8▸ §7IP",
-                "§6" + getServerIp()
+                "§6§o" + getServerIp()
         );
     }
 
