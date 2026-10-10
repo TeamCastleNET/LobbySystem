@@ -10,3 +10,7 @@ jumppad:
 
 scoreboard:
   ip: 'teamcastle.net'
+
+cosmetics:
+  # true = alle Cosmetics sind für jeden Spieler freigeschaltet
+  unlock-all: true

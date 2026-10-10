@@ -41,6 +41,10 @@ public class HotbarItems {
         return hasId(item, TELEPORTER_ID);
     }
 
+    public static boolean isCosmetics(ItemStack item) {
+        return hasId(item, COSMETIC_ID);
+    }
+
     public static boolean isVisibilityItem(ItemStack item) {
         return hasId(item, VISIBILITY_ID);
     }

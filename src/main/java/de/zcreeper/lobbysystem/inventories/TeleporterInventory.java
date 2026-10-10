@@ -44,9 +44,33 @@ public class TeleporterInventory implements InventoryHolder {
         fill(BLACK_SLOTS, placeholder(Material.BLACK_STAINED_GLASS_PANE));
         fill(GRAY_SLOTS, placeholder(Material.GRAY_STAINED_GLASS_PANE));
 
-        inventory.setItem(SLOT_GEMRUSH, new ItemBuilder(Material.EMERALD).displayname("§aGemRush").build());
-        inventory.setItem(SLOT_SPAWN, new ItemBuilder(Material.NETHER_STAR).displayname("§6Spawn").build());
-        inventory.setItem(SLOT_LAVABATTLE, new ItemBuilder(Material.LAVA_BUCKET).displayname("§dLavaBattle").build());
+        inventory.setItem(SLOT_GEMRUSH, new ItemBuilder(Material.EMERALD)
+                .displayname("§aGemRush")
+                .lore(
+                        "",
+                        "§7Kämpfe im §e3er-Team §7um die Gems.",
+                        "§7Sammelt als Erstes §a10 Gems§7,",
+                        "§7um die Runde zu gewinnen!",
+                        "",
+                        "§8» §eLinksklick §7zum Verbinden"
+                )
+                .build());
+        inventory.setItem(SLOT_SPAWN, new ItemBuilder(Material.NETHER_STAR)
+                .displayname("§6Spawn")
+                .lore("", "§8» §eKlicke §7zum Teleportieren")
+                .build());
+        inventory.setItem(SLOT_LAVABATTLE, new ItemBuilder(Material.LAVA_BUCKET)
+                .displayname("§dLavaBattle")
+                .lore(
+                        "",
+                        "§7Meistere den §6Parkour §7und sammle",
+                        "§7unterwegs §bItems§7.",
+                        "§7Rüste dich damit aus und besiege",
+                        "§7die anderen im §cPvP§7!",
+                        "",
+                        "§8» §eLinksklick §7zum Verbinden"
+                )
+                .build());
     }
 
     public static void open(Player player) {

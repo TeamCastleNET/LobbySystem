@@ -1,8 +1,11 @@
 package de.zcreeper.lobbysystem;
 
 import de.zcreeper.lobbysystem.commands.SetSpawnCommand;
+import de.zcreeper.lobbysystem.commands.CosmeticsCommand;
 import de.zcreeper.lobbysystem.commands.SpawnCommand;
+import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
 import de.zcreeper.lobbysystem.listener.ChatMention;
+import de.zcreeper.lobbysystem.listener.CosmeticListener;
 import de.zcreeper.lobbysystem.listener.ConnectionListener;
 import de.zcreeper.lobbysystem.listener.JumpPadListener;
 import de.zcreeper.lobbysystem.listener.ProtectionListener;
@@ -32,11 +35,13 @@ public final class LobbySystem extends JavaPlugin {
 
         SpawnManager.loadSpawn();
         ScoreboardManager.start();
+        CosmeticManager.start();
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, ServerConnector.CHANNEL);
 
         registerCommand("setspawn", new SetSpawnCommand());
         registerCommand("spawn", new SpawnCommand());
+        registerCommand("cosmetics", new CosmeticsCommand());
 
         getServer().getPluginManager().registerEvents(new ConnectionListener(), this);
         getServer().getPluginManager().registerEvents(new ChatMention(), this);
@@ -44,6 +49,7 @@ public final class LobbySystem extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TeleporterListener(), this);
         getServer().getPluginManager().registerEvents(new VisibilityListener(), this);
         getServer().getPluginManager().registerEvents(new JumpPadListener(), this);
+        getServer().getPluginManager().registerEvents(new CosmeticListener(), this);
     }
 
     private void registerCommand(String name, CommandExecutor executor) {
@@ -55,6 +61,8 @@ public final class LobbySystem extends JavaPlugin {
     @Override
     public void onDisable() {
         getLogger().info("LobbySystem wird gestoppt.");
+
+        CosmeticManager.stop();
 
     }
 

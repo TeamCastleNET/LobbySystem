@@ -4,6 +4,7 @@ version: '${version}'
 main: de.zcreeper.lobbysystem.LobbySystem
 api-version: '1.21.11'
 load: POSTWORLD
+softdepend: [LuckPerms]
 
 commands:
   setspawn:
@@ -12,11 +13,17 @@ commands:
   spawn:
     description: Teleportiert dich zum Lobby-Spawn.
     usage: /spawn
+  cosmetics:
+    description: Öffnet das Cosmetics-Menü.
+    usage: /cosmetics
+    aliases: [cosmetic, cos]
 
 permissions:
   lobbysystem.setspawn:
     description: Erlaubt das Setzen des Lobby-Spawns.
     default: op
+  # Die einzelnen Cosmetic-Rechte (lobbysystem.cosmetics.<kategorie>.<id>) werden beim Start registriert.
+  # Mit "cosmetics.unlock-all: false" in der config.yml sind sie nur noch für OPs bzw. per Rechtevergabe freigeschaltet.
   lobbysystem.bypass:
     description: Umgeht den Lobby-Schutz.
     default: op

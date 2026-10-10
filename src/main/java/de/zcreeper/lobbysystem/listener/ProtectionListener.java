@@ -1,5 +1,6 @@
 package de.zcreeper.lobbysystem.listener;
 
+import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
 import de.zcreeper.lobbysystem.utils.SpawnManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -262,6 +263,8 @@ public class ProtectionListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        if (CosmeticManager.isCosmeticEntity(event.getEntity())) return;
+
         cancel(event);
     }
 

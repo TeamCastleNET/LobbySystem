@@ -59,7 +59,7 @@ public class ScoreboardManager {
         board.updateLines(
                 "",
                 "§6Rang:",
-                "§8» §cIn Arbeit",
+                "§8» " + RankProvider.getRank(board.getPlayer()),
                 " ",
                 "§6Coins:",
                 "§8» §b" + format(0),

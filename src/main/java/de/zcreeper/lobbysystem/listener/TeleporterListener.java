@@ -40,7 +40,7 @@ public class TeleporterListener implements Listener {
             switch (event.getSlot()) {
                 case TeleporterInventory.SLOT_SPAWN -> teleportToSpawn(player);
                 case TeleporterInventory.SLOT_GEMRUSH -> connect(player, "gemrush", "§aGemRush");
-                case TeleporterInventory.SLOT_LAVABATTLE -> connect(player, "murdermystery", "§cMurderMystery");
+                case TeleporterInventory.SLOT_LAVABATTLE -> connect(player, "lavabattle", "§dLavaBattle");
                 default -> {
                 }
             }

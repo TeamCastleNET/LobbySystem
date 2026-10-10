@@ -1,6 +1,7 @@
 package de.zcreeper.lobbysystem.listener;
 
 import de.zcreeper.lobbysystem.LobbySystem;
+import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
 import de.zcreeper.lobbysystem.items.HotbarItems;
 import de.zcreeper.lobbysystem.utils.PlayerHider;
 import de.zcreeper.lobbysystem.utils.ScoreboardManager;
@@ -39,6 +40,7 @@ public class ConnectionListener implements Listener {
         ScoreboardManager.create(player);
 
         HotbarItems.getItems(player);
+        CosmeticManager.load(player);
 
     }
 
@@ -50,6 +52,7 @@ public class ConnectionListener implements Listener {
         player.getInventory().clear();
         PlayerHider.handleQuit(player);
         ScoreboardManager.remove(player);
+        CosmeticManager.handleQuit(player);
     }
 
 }
