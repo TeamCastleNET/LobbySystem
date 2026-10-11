@@ -3,6 +3,7 @@ de\zcreeper\lobbysystem\cosmetics\types\Trail.class
 de\zcreeper\lobbysystem\cosmetics\Cosmetic.class
 de\zcreeper\lobbysystem\listener\ConnectionListener.class
 de\zcreeper\lobbysystem\utils\RankProvider.class
+de\zcreeper\lobbysystem\inventories\CookieClickerInventory.class
 de\zcreeper\lobbysystem\LobbySystem.class
 de\zcreeper\lobbysystem\utils\ItemBuilder.class
 de\zcreeper\lobbysystem\commands\SpawnCommand.class
@@ -12,7 +13,11 @@ de\zcreeper\lobbysystem\utils\PlayerHider.class
 de\zcreeper\lobbysystem\cosmetics\CosmeticEffects.class
 de\zcreeper\lobbysystem\cosmetics\types\Gadget$Action.class
 de\zcreeper\lobbysystem\cosmetics\CosmeticCategory.class
+de\zcreeper\lobbysystem\commands\CookieClickerCommand.class
 de\zcreeper\lobbysystem\commands\SetSpawnCommand.class
+de\zcreeper\lobbysystem\cookieclicker\CookieClickerManager.class
+de\zcreeper\lobbysystem\inventories\FriendsInventory.class
+de\zcreeper\lobbysystem\listener\FriendsListener.class
 de\zcreeper\lobbysystem\cosmetics\CosmeticManager$1.class
 de\zcreeper\lobbysystem\cosmetics\types\Aura.class
 de\zcreeper\lobbysystem\utils\ItemBuilder$Unsafe$ReflectionUtils.class
@@ -25,6 +30,7 @@ de\zcreeper\lobbysystem\utils\RankProvider$LuckPermsHook.class
 de\zcreeper\lobbysystem\cosmetics\types\Aura$Effect.class
 de\zcreeper\lobbysystem\cosmetics\types\Gadget$1.class
 de\zcreeper\lobbysystem\listener\ChatMention.class
+de\zcreeper\lobbysystem\listener\CookieClickerListener.class
 de\zcreeper\lobbysystem\listener\CosmeticListener.class
 de\zcreeper\lobbysystem\listener\TeleporterListener.class
 de\zcreeper\lobbysystem\listener\JumpPadListener.class

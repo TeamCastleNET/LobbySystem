@@ -1,10 +1,12 @@
 package de.zcreeper.lobbysystem.listener;
 
 import de.zcreeper.lobbysystem.LobbySystem;
+import de.zcreeper.lobbysystem.cookieclicker.CookieClickerManager;
 import de.zcreeper.lobbysystem.inventories.TeleporterInventory;
 import de.zcreeper.lobbysystem.items.HotbarItems;
 import de.zcreeper.lobbysystem.utils.ServerConnector;
 import de.zcreeper.lobbysystem.utils.SpawnManager;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,6 +43,7 @@ public class TeleporterListener implements Listener {
                 case TeleporterInventory.SLOT_SPAWN -> teleportToSpawn(player);
                 case TeleporterInventory.SLOT_GEMRUSH -> connect(player, "gemrush", "§aGemRush");
                 case TeleporterInventory.SLOT_LAVABATTLE -> connect(player, "lavabattle", "§dLavaBattle");
+                case TeleporterInventory.SLOT_COOKIECLICKER -> teleportToCookieClicker(player);
                 default -> {
                 }
             }
@@ -51,6 +54,7 @@ public class TeleporterListener implements Listener {
                 case TeleporterInventory.SLOT_SPAWN -> teleportToSpawn(player);
                 case TeleporterInventory.SLOT_GEMRUSH -> message(player);
                 case TeleporterInventory.SLOT_LAVABATTLE -> message(player);
+                case TeleporterInventory.SLOT_COOKIECLICKER -> teleportToCookieClicker(player);
             }
         }
     }
@@ -65,6 +69,21 @@ public class TeleporterListener implements Listener {
 
         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
         player.sendMessage(LobbySystem.getPrefix() + "§aDu wurdest zum Spawn teleportiert.");
+    }
+
+    private void teleportToCookieClicker(Player player) {
+        player.closeInventory();
+
+        Location location = CookieClickerManager.getTeleportLocation();
+
+        if (location == null) {
+            player.sendMessage(LobbySystem.getPrefix() + "§cEs wurde noch kein CookieClicker gesetzt.");
+            return;
+        }
+
+        player.teleport(location);
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
+        player.sendMessage(LobbySystem.getPrefix() + "§aDu wurdest zum §6CookieClicker §ateleportiert.");
     }
 
     private void connect(Player player, String key, String displayName) {

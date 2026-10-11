@@ -35,6 +35,14 @@ public class CosmeticListener implements Listener {
             return;
         }
 
+        if (HotbarItems.isNoGadget(event.getItem())) {
+            event.setCancelled(true);
+
+            CosmeticCategoryInventory.open(player, CosmeticCategory.GADGET);
+            player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 1.2F);
+            return;
+        }
+
         Gadget gadget = Gadget.fromItem(event.getItem());
 
         if (gadget == null) return;

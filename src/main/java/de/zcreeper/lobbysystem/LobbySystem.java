@@ -1,11 +1,15 @@
 package de.zcreeper.lobbysystem;
 
+import de.zcreeper.lobbysystem.commands.CookieClickerCommand;
 import de.zcreeper.lobbysystem.commands.SetSpawnCommand;
 import de.zcreeper.lobbysystem.commands.CosmeticsCommand;
 import de.zcreeper.lobbysystem.commands.SpawnCommand;
+import de.zcreeper.lobbysystem.cookieclicker.CookieClickerManager;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
 import de.zcreeper.lobbysystem.listener.ChatMention;
+import de.zcreeper.lobbysystem.listener.CookieClickerListener;
 import de.zcreeper.lobbysystem.listener.CosmeticListener;
+import de.zcreeper.lobbysystem.listener.FriendsListener;
 import de.zcreeper.lobbysystem.listener.ConnectionListener;
 import de.zcreeper.lobbysystem.listener.JumpPadListener;
 import de.zcreeper.lobbysystem.listener.ProtectionListener;
@@ -34,6 +38,7 @@ public final class LobbySystem extends JavaPlugin {
         saveDefaultConfig();
 
         SpawnManager.loadSpawn();
+        CookieClickerManager.load();
         ScoreboardManager.start();
         CosmeticManager.start();
 
@@ -42,6 +47,7 @@ public final class LobbySystem extends JavaPlugin {
         registerCommand("setspawn", new SetSpawnCommand());
         registerCommand("spawn", new SpawnCommand());
         registerCommand("cosmetics", new CosmeticsCommand());
+        registerCommand("cookieclicker", new CookieClickerCommand());
 
         getServer().getPluginManager().registerEvents(new ConnectionListener(), this);
         getServer().getPluginManager().registerEvents(new ChatMention(), this);
@@ -50,6 +56,8 @@ public final class LobbySystem extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new VisibilityListener(), this);
         getServer().getPluginManager().registerEvents(new JumpPadListener(), this);
         getServer().getPluginManager().registerEvents(new CosmeticListener(), this);
+        getServer().getPluginManager().registerEvents(new FriendsListener(), this);
+        getServer().getPluginManager().registerEvents(new CookieClickerListener(), this);
     }
 
     private void registerCommand(String name, CommandExecutor executor) {

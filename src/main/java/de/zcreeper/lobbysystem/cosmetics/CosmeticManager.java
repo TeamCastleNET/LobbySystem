@@ -5,6 +5,7 @@ import de.zcreeper.lobbysystem.cosmetics.types.Aura;
 import de.zcreeper.lobbysystem.cosmetics.types.Gadget;
 import de.zcreeper.lobbysystem.cosmetics.types.Hat;
 import de.zcreeper.lobbysystem.cosmetics.types.Trail;
+import de.zcreeper.lobbysystem.items.HotbarItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -25,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CosmeticManager {
 
-    public static final int GADGET_SLOT = 6;
+    public static final int GADGET_SLOT = HotbarItems.GADGET_SLOT;
 
     private static final long UPDATE_INTERVAL = 2L;
     private static final double MOVE_THRESHOLD_SQUARED = 0.0025D;
@@ -100,7 +101,7 @@ public class CosmeticManager {
             }
             case GADGET -> {
                 if (Gadget.fromItem(player.getInventory().getItem(GADGET_SLOT)) != null) {
-                    player.getInventory().setItem(GADGET_SLOT, null);
+                    player.getInventory().setItem(GADGET_SLOT, HotbarItems.getNoGadget());
                 }
             }
             default -> {

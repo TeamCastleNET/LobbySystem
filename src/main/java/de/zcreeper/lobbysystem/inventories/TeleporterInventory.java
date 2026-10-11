@@ -18,6 +18,7 @@ public class TeleporterInventory implements InventoryHolder {
     public static final int SLOT_GEMRUSH = 20;
     public static final int SLOT_SPAWN = 22;
     public static final int SLOT_LAVABATTLE = 24;
+    public static final int SLOT_COOKIECLICKER = 31;
 
     private static final int[] BUTTON_SLOTS = {0, 8, 36, 44};
 
@@ -32,7 +33,7 @@ public class TeleporterInventory implements InventoryHolder {
     private static final int[] GRAY_SLOTS = {
             10, 11, 12, 13, 14, 15, 16,
             19, 21, 23, 25,
-            28, 29, 30, 31, 32, 33, 34
+            28, 29, 30, 32, 33, 34
     };
 
     private final Inventory inventory;
@@ -69,6 +70,18 @@ public class TeleporterInventory implements InventoryHolder {
                         "§7die anderen im §cPvP§7!",
                         "",
                         "§8» §eLinksklick §7zum Verbinden"
+                )
+                .build());
+        inventory.setItem(SLOT_COOKIECLICKER, new ItemBuilder(Material.COOKIE)
+                .displayname("§6CookieClicker")
+                .lore(
+                        "",
+                        "§7Klicke auf den Cookie und sammle",
+                        "§7so viele §6Cookies §7wie möglich.",
+                        "§7Später kannst du sie in §bCoins",
+                        "§7auszahlen lassen.",
+                        "",
+                        "§8» §eKlicke §7zum Teleportieren"
                 )
                 .build());
     }
