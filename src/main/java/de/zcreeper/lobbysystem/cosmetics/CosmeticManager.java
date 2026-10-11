@@ -6,6 +6,7 @@ import de.zcreeper.lobbysystem.cosmetics.types.Gadget;
 import de.zcreeper.lobbysystem.cosmetics.types.Hat;
 import de.zcreeper.lobbysystem.cosmetics.types.Trail;
 import de.zcreeper.lobbysystem.items.HotbarItems;
+import de.zcreeper.lobbysystem.utils.Sounds;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -132,6 +133,7 @@ public class CosmeticManager {
         long remaining = playerCooldowns.getOrDefault(gadget, 0L) - System.currentTimeMillis();
 
         if (remaining > 0) {
+            Sounds.cooldown(player);
             player.sendActionBar("§cBitte warte noch §e" + String.format("%.1f", remaining / 1000D) + "s§c.");
             return;
         }

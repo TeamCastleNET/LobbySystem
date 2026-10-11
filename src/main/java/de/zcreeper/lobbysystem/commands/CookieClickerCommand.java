@@ -3,6 +3,7 @@ package de.zcreeper.lobbysystem.commands;
 import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.cookieclicker.CookieClickerManager;
 import de.zcreeper.lobbysystem.inventories.CookieClickerInventory;
+import de.zcreeper.lobbysystem.utils.Sounds;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,15 +27,18 @@ public class CookieClickerCommand implements TabExecutor {
 
         if (args.length == 0) {
             CookieClickerInventory.open(player);
+            Sounds.open(player);
             return true;
         }
 
         if (!player.hasPermission(PERMISSION)) {
+            Sounds.error(player);
             player.sendMessage(LobbySystem.getNoperms());
             return true;
         }
 
         if (args.length != 1 || (!args[0].equalsIgnoreCase("set") && !args[0].equalsIgnoreCase("remove"))) {
+            Sounds.error(player);
             player.sendMessage(LobbySystem.getPrefix() + "§cBenutze: §6/" + label + " <set|remove>");
             return true;
         }
@@ -42,25 +46,30 @@ public class CookieClickerCommand implements TabExecutor {
         Block block = player.getTargetBlockExact(MAX_DISTANCE);
 
         if (block == null || block.getType().isAir()) {
+            Sounds.error(player);
             player.sendMessage(LobbySystem.getPrefix() + "§cDu musst einen Block ansehen.");
             return true;
         }
 
         if (args[0].equalsIgnoreCase("set")) {
             if (!CookieClickerManager.add(block, player.getLocation())) {
+                Sounds.error(player);
                 player.sendMessage(LobbySystem.getPrefix() + "§cDieser Block ist bereits ein CookieClicker.");
                 return true;
             }
 
+            Sounds.success(player);
             player.sendMessage(LobbySystem.getPrefix() + "§aDer Block wurde in einen §6CookieClicker §averwandelt.");
             return true;
         }
 
         if (!CookieClickerManager.remove(block)) {
+            Sounds.error(player);
             player.sendMessage(LobbySystem.getPrefix() + "§cDieser Block ist kein CookieClicker.");
             return true;
         }
 
+        Sounds.success(player);
         player.sendMessage(LobbySystem.getPrefix() + "§aDer §6CookieClicker §awurde entfernt.");
         return true;
     }

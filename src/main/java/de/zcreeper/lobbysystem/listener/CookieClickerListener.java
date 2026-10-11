@@ -3,6 +3,7 @@ package de.zcreeper.lobbysystem.listener;
 import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.cookieclicker.CookieClickerManager;
 import de.zcreeper.lobbysystem.inventories.CookieClickerInventory;
+import de.zcreeper.lobbysystem.utils.Sounds;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -49,7 +50,7 @@ public class CookieClickerListener implements Listener {
 
         if (player.isSneaking()) {
             CookieClickerInventory.open(player);
-            player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 1.2F);
+            Sounds.open(player);
             return;
         }
 
@@ -80,6 +81,7 @@ public class CookieClickerListener implements Listener {
         event.setCancelled(true);
 
         if (event.getPlayer().hasPermission("lobbysystem.cookieclicker.admin")) {
+            Sounds.error(event.getPlayer());
             event.getPlayer().sendMessage(LobbySystem.getPrefix() + "§7Entferne den CookieClicker mit §6/cookieclicker remove§7.");
         }
     }
@@ -96,7 +98,13 @@ public class CookieClickerListener implements Listener {
         if (event.getSlot() == CookieClickerInventory.SLOT_PAYOUT) {
             // Kommt, sobald es das Coins-System gibt
             player.closeInventory();
+            Sounds.error(player);
             player.sendMessage(LobbySystem.getPrefix() + "§cDie Auszahlung in Coins ist noch in Arbeit.");
+            return;
+        }
+
+        if (event.getSlot() == CookieClickerInventory.SLOT_INFO || event.getSlot() == CookieClickerInventory.SLOT_COOKIES) {
+            Sounds.click(player);
         }
     }
 

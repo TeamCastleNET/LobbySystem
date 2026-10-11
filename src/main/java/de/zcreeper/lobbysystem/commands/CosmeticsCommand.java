@@ -2,6 +2,7 @@ package de.zcreeper.lobbysystem.commands;
 
 import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.inventories.CosmeticsInventory;
+import de.zcreeper.lobbysystem.utils.Sounds;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,6 +19,7 @@ public class CosmeticsCommand implements CommandExecutor {
         }
 
         CosmeticsInventory.open(player);
+        Sounds.open(player);
         return true;
     }
 

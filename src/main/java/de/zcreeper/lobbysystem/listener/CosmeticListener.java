@@ -8,7 +8,7 @@ import de.zcreeper.lobbysystem.cosmetics.types.Gadget;
 import de.zcreeper.lobbysystem.inventories.CosmeticCategoryInventory;
 import de.zcreeper.lobbysystem.inventories.CosmeticsInventory;
 import de.zcreeper.lobbysystem.items.HotbarItems;
-import org.bukkit.Sound;
+import de.zcreeper.lobbysystem.utils.Sounds;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +31,7 @@ public class CosmeticListener implements Listener {
             event.setCancelled(true);
 
             CosmeticsInventory.open(player);
-            player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 1.2F);
+            Sounds.open(player);
             return;
         }
 
@@ -39,7 +39,7 @@ public class CosmeticListener implements Listener {
             event.setCancelled(true);
 
             CosmeticCategoryInventory.open(player, CosmeticCategory.GADGET);
-            player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 1.2F);
+            Sounds.open(player);
             return;
         }
 
@@ -85,7 +85,7 @@ public class CosmeticListener implements Listener {
 
             CosmeticManager.unequipAll(player);
             player.closeInventory();
-            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1F, 0.8F);
+            Sounds.unequip(player);
             player.sendMessage(LobbySystem.getPrefix() + "§7Du hast alle Cosmetics §cabgelegt§7.");
             return;
         }
@@ -95,7 +95,7 @@ public class CosmeticListener implements Listener {
         if (category == null) return;
 
         CosmeticCategoryInventory.open(player, category);
-        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
+        Sounds.click(player);
     }
 
     private void handleCategoryClick(Player player, CosmeticCategoryInventory inventory, int slot) {
@@ -103,7 +103,7 @@ public class CosmeticListener implements Listener {
 
         if (slot == CosmeticCategoryInventory.SLOT_BACK) {
             CosmeticsInventory.open(player);
-            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
+            Sounds.page(player);
             return;
         }
 
@@ -133,7 +133,7 @@ public class CosmeticListener implements Listener {
             unequip(player, cosmetic);
         } else {
             CosmeticManager.equip(player, cosmetic);
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.6F, 1.6F);
+            Sounds.equip(player);
             player.sendMessage(LobbySystem.getPrefix() + "§7Du hast " + cosmetic.getDisplayName() + " §aausgerüstet§7.");
         }
 
@@ -142,12 +142,12 @@ public class CosmeticListener implements Listener {
 
     private void unequip(Player player, Cosmetic cosmetic) {
         CosmeticManager.unequip(player, cosmetic.getCategory());
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1F, 0.8F);
+        Sounds.unequip(player);
         player.sendMessage(LobbySystem.getPrefix() + "§7Du hast " + cosmetic.getDisplayName() + " §cabgelegt§7.");
     }
 
     private void deny(Player player, String message) {
-        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 1F);
+        Sounds.error(player);
         player.sendMessage(LobbySystem.getPrefix() + message);
     }
 

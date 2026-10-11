@@ -3,7 +3,7 @@ package de.zcreeper.lobbysystem.listener;
 import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.inventories.FriendsInventory;
 import de.zcreeper.lobbysystem.items.HotbarItems;
-import org.bukkit.Sound;
+import de.zcreeper.lobbysystem.utils.Sounds;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +25,7 @@ public class FriendsListener implements Listener {
         Player player = event.getPlayer();
 
         FriendsInventory.open(player);
-        player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 1.2F);
+        Sounds.open(player);
     }
 
     @EventHandler
@@ -44,6 +44,7 @@ public class FriendsListener implements Listener {
             case FriendsInventory.SLOT_NEXT -> {
                 if (inventory.hasNextPage()) changePage(player, inventory.getPage() + 1);
             }
+            case FriendsInventory.SLOT_PROFILE -> Sounds.click(player);
             case FriendsInventory.SLOT_ADD, FriendsInventory.SLOT_REQUESTS, FriendsInventory.SLOT_SETTINGS -> message(player);
             default -> {
                 if (inventory.getFriend(event.getSlot()) != null) message(player);
@@ -53,11 +54,12 @@ public class FriendsListener implements Listener {
 
     private void changePage(Player player, int page) {
         FriendsInventory.open(player, page);
-        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
+        Sounds.page(player);
     }
 
     private void message(Player player) {
         player.closeInventory();
+        Sounds.error(player);
         player.sendMessage(LobbySystem.getPrefix() + "§cDas FreundeSystem ist noch in Arbeit.");
     }
 

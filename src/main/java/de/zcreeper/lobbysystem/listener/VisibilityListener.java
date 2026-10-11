@@ -3,7 +3,7 @@ package de.zcreeper.lobbysystem.listener;
 import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.items.HotbarItems;
 import de.zcreeper.lobbysystem.utils.PlayerHider;
-import org.bukkit.Sound;
+import de.zcreeper.lobbysystem.utils.Sounds;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,7 +43,7 @@ public class VisibilityListener implements Listener {
         boolean hiding = PlayerHider.toggle(player);
 
         player.getInventory().setItemInMainHand(HotbarItems.getVisibilityItem(hiding));
-        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F);
+        Sounds.toggle(player, !hiding);
 
         player.sendMessage(hiding
                 ? LobbySystem.getPrefix() + "§cDie Spieler werden dir nicht mehr angezeigt."

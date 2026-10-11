@@ -2,6 +2,7 @@ package de.zcreeper.lobbysystem.commands;
 
 import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.utils.SpawnManager;
+import de.zcreeper.lobbysystem.utils.Sounds;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,10 +19,12 @@ public class SpawnCommand implements CommandExecutor {
         }
 
         if (!SpawnManager.teleportToSpawn(player)) {
+            Sounds.error(player);
             player.sendMessage(LobbySystem.getPrefix() + "§cEs wurde noch kein Spawn gesetzt.");
             return true;
         }
 
+        Sounds.teleport(player);
         player.sendMessage(LobbySystem.getPrefix() + "§aDu wurdest zum Spawn teleportiert.");
         return true;
     }

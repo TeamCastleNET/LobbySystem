@@ -10,6 +10,7 @@ import de.zcreeper.lobbysystem.listener.ChatMention;
 import de.zcreeper.lobbysystem.listener.CookieClickerListener;
 import de.zcreeper.lobbysystem.listener.CosmeticListener;
 import de.zcreeper.lobbysystem.listener.FriendsListener;
+import de.zcreeper.lobbysystem.listener.InventorySoundListener;
 import de.zcreeper.lobbysystem.listener.ConnectionListener;
 import de.zcreeper.lobbysystem.listener.JumpPadListener;
 import de.zcreeper.lobbysystem.listener.ProtectionListener;
@@ -58,6 +59,7 @@ public final class LobbySystem extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CosmeticListener(), this);
         getServer().getPluginManager().registerEvents(new FriendsListener(), this);
         getServer().getPluginManager().registerEvents(new CookieClickerListener(), this);
+        getServer().getPluginManager().registerEvents(new InventorySoundListener(), this);
     }
 
     private void registerCommand(String name, CommandExecutor executor) {

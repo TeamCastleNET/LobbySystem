@@ -22,6 +22,7 @@ C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobb
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\listener\CookieClickerListener.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\listener\CosmeticListener.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\listener\FriendsListener.java
+C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\listener\InventorySoundListener.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\listener\JumpPadListener.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\listener\ProtectionListener.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\listener\TeleporterListener.java
@@ -33,4 +34,5 @@ C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobb
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\utils\RankProvider.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\utils\ScoreboardManager.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\utils\ServerConnector.java
+C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\utils\Sounds.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\utils\SpawnManager.java

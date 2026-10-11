@@ -6,8 +6,8 @@ import de.zcreeper.lobbysystem.inventories.TeleporterInventory;
 import de.zcreeper.lobbysystem.items.HotbarItems;
 import de.zcreeper.lobbysystem.utils.ServerConnector;
 import de.zcreeper.lobbysystem.utils.SpawnManager;
+import de.zcreeper.lobbysystem.utils.Sounds;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +27,7 @@ public class TeleporterListener implements Listener {
         event.setCancelled(true);
 
         TeleporterInventory.open(event.getPlayer());
+        Sounds.open(event.getPlayer());
     }
 
     @EventHandler
@@ -63,11 +64,12 @@ public class TeleporterListener implements Listener {
         player.closeInventory();
 
         if (!SpawnManager.teleportToSpawn(player)) {
+            Sounds.error(player);
             player.sendMessage(LobbySystem.getPrefix() + "§cEs wurde noch kein Spawn gesetzt.");
             return;
         }
 
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
+        Sounds.teleport(player);
         player.sendMessage(LobbySystem.getPrefix() + "§aDu wurdest zum Spawn teleportiert.");
     }
 
@@ -77,12 +79,13 @@ public class TeleporterListener implements Listener {
         Location location = CookieClickerManager.getTeleportLocation();
 
         if (location == null) {
+            Sounds.error(player);
             player.sendMessage(LobbySystem.getPrefix() + "§cEs wurde noch kein CookieClicker gesetzt.");
             return;
         }
 
         player.teleport(location);
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
+        Sounds.teleport(player);
         player.sendMessage(LobbySystem.getPrefix() + "§aDu wurdest zum §6CookieClicker §ateleportiert.");
     }
 
@@ -90,16 +93,18 @@ public class TeleporterListener implements Listener {
         player.closeInventory();
 
         if (!ServerConnector.connect(player, key)) {
+            Sounds.error(player);
             player.sendMessage(LobbySystem.getPrefix() + "§cDieser Server ist aktuell nicht verfügbar.");
             return;
         }
 
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
+        Sounds.connect(player);
         player.sendMessage(LobbySystem.getPrefix() + "§7Du wirst zu " + displayName + " §7verbunden...");
     }
 
     private void message(Player player) {
         player.closeInventory();
+        Sounds.error(player);
         player.sendMessage(LobbySystem.getPrefix() + "§cDiese Funktion ist noch in Arbeit.");
     }
 
