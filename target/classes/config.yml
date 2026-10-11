@@ -11,6 +11,9 @@ jumppad:
 scoreboard:
   ip: 'teamcastle.net'
 
+cookieclicker:
+  blocks: {}
+
 cosmetics:
   # true = alle Cosmetics sind für jeden Spieler freigeschaltet
   unlock-all: true

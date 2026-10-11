@@ -17,6 +17,10 @@ commands:
     description: Öffnet das Cosmetics-Menü.
     usage: /cosmetics
     aliases: [cosmetic, cos]
+  cookieclicker:
+    description: Öffnet dein CookieClicker-Konto oder setzt/entfernt einen CookieClicker.
+    usage: /cookieclicker [set|remove]
+    aliases: [cookies]
 
 permissions:
   lobbysystem.setspawn:
@@ -24,6 +28,9 @@ permissions:
     default: op
   # Die einzelnen Cosmetic-Rechte (lobbysystem.cosmetics.<kategorie>.<id>) werden beim Start registriert.
   # Mit "cosmetics.unlock-all: false" in der config.yml sind sie nur noch für OPs bzw. per Rechtevergabe freigeschaltet.
+  lobbysystem.cookieclicker.admin:
+    description: Erlaubt das Setzen und Entfernen von CookieClickern.
+    default: op
   lobbysystem.bypass:
     description: Umgeht den Lobby-Schutz.
     default: op
