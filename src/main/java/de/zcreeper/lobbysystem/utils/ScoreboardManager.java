@@ -2,6 +2,7 @@ package de.zcreeper.lobbysystem.utils;
 
 import de.zcreeper.lobbysystem.LobbySystem;
 import fr.mrmicky.fastboard.FastBoard;
+import net.teamcastle.teamcastleapi.TeamCastleAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -62,7 +63,7 @@ public class ScoreboardManager {
                 "§8» " + RankProvider.getRank(board.getPlayer()),
                 " ",
                 "§6Coins:",
-                "§8» §b" + format(0),
+                "§8» §b" + format(TeamCastleAPI.getCoinAPI().getCachedCoins(board.getPlayer().getUniqueId()).orElse(0L)),
                 "",
                 "§6Online:",
                 "§8» §b" + format(Bukkit.getOnlinePlayers().size()),

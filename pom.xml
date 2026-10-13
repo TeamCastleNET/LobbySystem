@@ -12,9 +12,22 @@
     <name>LobbySystem</name>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>teamcastle-releases</id>
+            <name>TeamCastle Releases</name>
+            <url>https://repo.julianweinelt.de/repository/teamcastle-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>teamcastle-snapshots</id>
+            <name>TeamCastle Snapshots</name>
+            <url>https://repo.julianweinelt.de/repository/teamcastle-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
@@ -24,14 +37,13 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.3</version>
+                <version>3.6.1</version>
                 <configuration>
                     <relocations>
                         <relocation>
@@ -60,8 +72,17 @@
 
     <repositories>
         <repository>
+            <id>teamcastle-snapshots</id>
+            <name>TeamCastle Repo</name>
+            <url>https://repo.julianweinelt.de/repository/teamcastle-snapshots/</url>
+        </repository>
+        <repository>
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -81,6 +102,12 @@
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>
             <version>5.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.teamcastle</groupId>
+            <artifactId>TeamCastleAPI</artifactId>
+            <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

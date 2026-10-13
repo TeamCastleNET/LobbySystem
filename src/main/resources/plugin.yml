@@ -4,6 +4,7 @@ version: '${version}'
 main: de.zcreeper.lobbysystem.LobbySystem
 api-version: '1.21.11'
 load: POSTWORLD
+depend: [TeamCastleAPI]
 softdepend: [LuckPerms]
 
 commands:
