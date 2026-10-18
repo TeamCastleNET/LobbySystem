@@ -50,6 +50,14 @@
                             <pattern>fr.mrmicky.fastboard</pattern>
                             <shadedPattern>de.zcreeper.lobbysystem.fastboard</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>com.zaxxer.hikari</pattern>
+                            <shadedPattern>de.zcreeper.lobbysystem.libs.hikari</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.mariadb.jdbc</pattern>
+                            <shadedPattern>de.zcreeper.lobbysystem.libs.mariadb</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -91,6 +99,23 @@
             <groupId>fr.mrmicky</groupId>
             <artifactId>fastboard</artifactId>
             <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>6.3.0</version>
+            <exclusions>
+                <!-- SLF4J wird von Paper bereitgestellt -->
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.5.3</version>
         </dependency>
         <dependency>
             <groupId>io.papermc.paper</groupId>

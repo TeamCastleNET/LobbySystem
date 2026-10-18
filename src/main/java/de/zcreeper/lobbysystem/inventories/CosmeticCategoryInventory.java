@@ -3,6 +3,7 @@ package de.zcreeper.lobbysystem.inventories;
 import de.zcreeper.lobbysystem.cosmetics.Cosmetic;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticCategory;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
+import de.zcreeper.lobbysystem.cosmetics.CosmeticShop;
 import de.zcreeper.lobbysystem.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,6 +23,7 @@ public class CosmeticCategoryInventory implements InventoryHolder {
 
     public static final int SIZE = 54;
 
+    public static final int SLOT_COINS = 4;
     public static final int SLOT_BACK = 45;
     public static final int SLOT_REMOVE = 49;
 
@@ -66,6 +68,7 @@ public class CosmeticCategoryInventory implements InventoryHolder {
             inventory.setItem(COSMETIC_SLOTS[i], cosmeticItem(player, cosmetic));
         }
 
+        inventory.setItem(SLOT_COINS, coinsItem(player));
         inventory.setItem(SLOT_BACK, new ItemBuilder(Material.ARROW).displayname("§7Zurück").build());
         inventory.setItem(SLOT_REMOVE, new ItemBuilder(Material.BARRIER)
                 .displayname("§cAblegen")
@@ -90,17 +93,23 @@ public class CosmeticCategoryInventory implements InventoryHolder {
         boolean unlocked = cosmetic.isUnlocked(player);
         boolean equipped = CosmeticManager.isEquipped(player, cosmetic);
 
-        String status;
+        ItemBuilder builder = new ItemBuilder(cosmetic.getIcon())
+                .displayname(cosmetic.getDisplayName())
+                .lore("§7" + cosmetic.getDescription(), "")
+                .flag(ItemFlag.HIDE_ATTRIBUTES);
 
-        if (!unlocked) status = "§c✖ Nicht freigeschaltet";
-        else if (equipped) status = "§a✔ Ausgerüstet §8(§7Klicke zum Ablegen§8)";
-        else status = "§eKlicke zum Ausrüsten";
+        if (equipped) {
+            builder.lore("§a✔ Ausgerüstet", "§8» §7Klicke zum Ablegen");
+        } else if (unlocked) {
+            builder.lore("§a✔ Freigeschaltet", "§8» §eKlicke zum Ausrüsten");
+        } else if (CosmeticShop.canAfford(player, cosmetic)) {
+            builder.lore("§7Preis: §e" + CosmeticShop.format(cosmetic.getPrice()) + " Coins", "§8» §eKlicke zum Kaufen");
+        } else {
+            long missing = cosmetic.getPrice() - CosmeticShop.getCoins(player);
+            builder.lore("§7Preis: §e" + CosmeticShop.format(cosmetic.getPrice()) + " Coins", "§8» §cDir fehlen " + CosmeticShop.format(missing) + " Coins");
+        }
 
-        ItemStack item = new ItemBuilder(unlocked ? cosmetic.getIcon() : Material.GRAY_DYE)
-                .displayname(unlocked ? cosmetic.getDisplayName() : "§7" + stripColor(cosmetic.getDisplayName()))
-                .lore("§7" + cosmetic.getDescription(), "", status)
-                .flag(ItemFlag.HIDE_ATTRIBUTES)
-                .build();
+        ItemStack item = builder.build();
 
         if (equipped) {
             ItemMeta meta = item.getItemMeta();
@@ -111,8 +120,11 @@ public class CosmeticCategoryInventory implements InventoryHolder {
         return item;
     }
 
-    private String stripColor(String text) {
-        return text.replaceAll("§.", "");
+    private ItemStack coinsItem(Player player) {
+        return new ItemBuilder(Material.GOLD_NUGGET)
+                .displayname("§6Deine Coins")
+                .lore("", "§8» §e" + CosmeticShop.format(CosmeticShop.getCoins(player)) + " Coins")
+                .build();
     }
 
     private ItemStack placeholder(Material material) {

@@ -6,6 +6,7 @@ import de.zcreeper.lobbysystem.commands.CosmeticsCommand;
 import de.zcreeper.lobbysystem.commands.SpawnCommand;
 import de.zcreeper.lobbysystem.cookieclicker.CookieClickerManager;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
+import de.zcreeper.lobbysystem.data.PlayerDataManager;
 import de.zcreeper.lobbysystem.listener.ChatMention;
 import de.zcreeper.lobbysystem.listener.CookieClickerListener;
 import de.zcreeper.lobbysystem.listener.CosmeticListener;
@@ -16,6 +17,7 @@ import de.zcreeper.lobbysystem.listener.JumpPadListener;
 import de.zcreeper.lobbysystem.listener.ProtectionListener;
 import de.zcreeper.lobbysystem.listener.TeleporterListener;
 import de.zcreeper.lobbysystem.listener.VisibilityListener;
+import de.zcreeper.lobbysystem.utils.DatabaseManager;
 import de.zcreeper.lobbysystem.utils.ScoreboardManager;
 import de.zcreeper.lobbysystem.utils.ServerConnector;
 import de.zcreeper.lobbysystem.utils.SpawnManager;
@@ -37,6 +39,12 @@ public final class LobbySystem extends JavaPlugin {
         getLogger().info("LobbySystem wird gestartet.");
 
         saveDefaultConfig();
+
+        if (DatabaseManager.connect()) {
+            PlayerDataManager.start();
+        } else {
+            getLogger().severe("Ohne Datenbank können keine Spieler joinen. Prüfe die mysql-Einstellungen in der config.yml.");
+        }
 
         SpawnManager.loadSpawn();
         CookieClickerManager.load();
@@ -73,6 +81,8 @@ public final class LobbySystem extends JavaPlugin {
         getLogger().info("LobbySystem wird gestoppt.");
 
         CosmeticManager.stop();
+        PlayerDataManager.stop();
+        DatabaseManager.disconnect();
 
     }
 

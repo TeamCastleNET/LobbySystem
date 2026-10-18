@@ -1,6 +1,8 @@
 package de.zcreeper.lobbysystem.cookieclicker;
 
 import de.zcreeper.lobbysystem.LobbySystem;
+import de.zcreeper.lobbysystem.data.PlayerData;
+import de.zcreeper.lobbysystem.data.PlayerDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -22,7 +24,6 @@ import java.util.Map;
 public class CookieClickerManager {
 
     private static final String PATH = "cookieclicker.blocks";
-    private static final String COOKIES_KEY = "cookies";
     private static final String HOLOGRAM_KEY = "cookieclicker_hologram";
 
     private static final String HOLOGRAM_TEXT = "§6§lCookieClicker\n"
@@ -100,13 +101,14 @@ public class CookieClickerManager {
     }
 
     public static long getCookies(Player player) {
-        return player.getPersistentDataContainer().getOrDefault(getCookiesKey(), PersistentDataType.LONG, 0L);
+        return PlayerDataManager.get(player).getCookies();
     }
 
     public static long addCookie(Player player) {
-        long cookies = getCookies(player) + 1;
+        PlayerData data = PlayerDataManager.get(player);
+        long cookies = data.getCookies() + 1;
 
-        player.getPersistentDataContainer().set(getCookiesKey(), PersistentDataType.LONG, cookies);
+        data.setCookies(cookies);
         return cookies;
     }
 
@@ -139,10 +141,6 @@ public class CookieClickerManager {
 
     private static String getKey(Block block) {
         return block.getWorld().getName() + ";" + block.getX() + ";" + block.getY() + ";" + block.getZ();
-    }
-
-    private static NamespacedKey getCookiesKey() {
-        return new NamespacedKey(LobbySystem.getInstance(), COOKIES_KEY);
     }
 
     private static NamespacedKey getHologramKey() {

@@ -7,12 +7,16 @@ C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobb
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\cosmetics\CosmeticCategory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\cosmetics\CosmeticEffects.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\cosmetics\CosmeticManager.java
+C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\cosmetics\CosmeticShop.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\cosmetics\types\Aura.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\cosmetics\types\Gadget.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\cosmetics\types\Hat.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\cosmetics\types\Trail.java
+C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\data\PlayerData.java
+C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\data\PlayerDataManager.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\CookieClickerInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\CosmeticCategoryInventory.java
+C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\CosmeticPurchaseInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\CosmeticsInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\FriendsInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\TeleporterInventory.java

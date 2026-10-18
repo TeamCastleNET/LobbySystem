@@ -38,6 +38,14 @@
               <pattern>fr.mrmicky.fastboard</pattern>
               <shadedPattern>de.zcreeper.lobbysystem.fastboard</shadedPattern>
             </relocation>
+            <relocation>
+              <pattern>com.zaxxer.hikari</pattern>
+              <shadedPattern>de.zcreeper.lobbysystem.libs.hikari</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.mariadb.jdbc</pattern>
+              <shadedPattern>de.zcreeper.lobbysystem.libs.mariadb</shadedPattern>
+            </relocation>
           </relocations>
         </configuration>
       </plugin>

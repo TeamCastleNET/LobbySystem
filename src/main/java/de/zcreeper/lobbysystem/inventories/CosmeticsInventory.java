@@ -3,6 +3,7 @@ package de.zcreeper.lobbysystem.inventories;
 import de.zcreeper.lobbysystem.cosmetics.Cosmetic;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticCategory;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
+import de.zcreeper.lobbysystem.cosmetics.CosmeticShop;
 import de.zcreeper.lobbysystem.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,6 +20,7 @@ public class CosmeticsInventory implements InventoryHolder {
 
     public static final int SIZE = 45;
 
+    public static final int SLOT_COINS = 4;
     public static final int SLOT_REMOVE_ALL = 31;
 
     private static final int[] CATEGORY_SLOTS = {19, 21, 23, 25};
@@ -26,7 +28,7 @@ public class CosmeticsInventory implements InventoryHolder {
     private static final int[] BUTTON_SLOTS = {0, 8, 36, 44};
 
     private static final int[] BLACK_SLOTS = {
-            1, 2, 3, 4, 5, 6, 7,
+            1, 2, 3, 5, 6, 7,
             9, 17,
             18, 26,
             27, 35,
@@ -53,6 +55,11 @@ public class CosmeticsInventory implements InventoryHolder {
         for (int i = 0; i < categories.length && i < CATEGORY_SLOTS.length; i++) {
             inventory.setItem(CATEGORY_SLOTS[i], categoryItem(player, categories[i]));
         }
+
+        inventory.setItem(SLOT_COINS, new ItemBuilder(Material.GOLD_NUGGET)
+                .displayname("§6Deine Coins")
+                .lore("", "§8» §e" + CosmeticShop.format(CosmeticShop.getCoins(player)) + " Coins")
+                .build());
 
         inventory.setItem(SLOT_REMOVE_ALL, new ItemBuilder(Material.BARRIER)
                 .displayname("§cAlle Cosmetics ablegen")

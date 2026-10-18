@@ -20,12 +20,15 @@ de\zcreeper\lobbysystem\listener\CookieClickerListener.class
 de\zcreeper\lobbysystem\listener\CosmeticListener.class
 de\zcreeper\lobbysystem\listener\JumpPadListener.class
 de\zcreeper\lobbysystem\utils\ServerConnector.class
+de\zcreeper\lobbysystem\inventories\CosmeticPurchaseInventory.class
 de\zcreeper\lobbysystem\listener\ProtectionListener.class
+de\zcreeper\lobbysystem\cosmetics\CosmeticShop.class
 de\zcreeper\lobbysystem\cosmetics\types\Gadget.class
 de\zcreeper\lobbysystem\commands\CosmeticsCommand.class
 de\zcreeper\lobbysystem\cosmetics\Cosmetic.class
 de\zcreeper\lobbysystem\listener\ConnectionListener.class
 de\zcreeper\lobbysystem\utils\RankProvider.class
+de\zcreeper\lobbysystem\data\PlayerData.class
 de\zcreeper\lobbysystem\commands\SpawnCommand.class
 de\zcreeper\lobbysystem\utils\PlayerHider.class
 de\zcreeper\lobbysystem\cosmetics\CosmeticEffects.class
@@ -45,3 +48,4 @@ de\zcreeper\lobbysystem\inventories\CosmeticsInventory.class
 de\zcreeper\lobbysystem\items\HotbarItems.class
 de\zcreeper\lobbysystem\cosmetics\types\Hat.class
 de\zcreeper\lobbysystem\utils\SpawnManager.class
+de\zcreeper\lobbysystem\data\PlayerDataManager.class

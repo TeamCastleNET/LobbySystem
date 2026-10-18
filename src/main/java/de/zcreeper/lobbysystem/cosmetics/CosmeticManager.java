@@ -1,6 +1,8 @@
 package de.zcreeper.lobbysystem.cosmetics;
 
 import de.zcreeper.lobbysystem.LobbySystem;
+import de.zcreeper.lobbysystem.data.PlayerData;
+import de.zcreeper.lobbysystem.data.PlayerDataManager;
 import de.zcreeper.lobbysystem.cosmetics.types.Aura;
 import de.zcreeper.lobbysystem.cosmetics.types.Gadget;
 import de.zcreeper.lobbysystem.cosmetics.types.Hat;
@@ -14,7 +16,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
@@ -58,14 +59,14 @@ public class CosmeticManager {
     }
 
     public static void load(Player player) {
-        PersistentDataContainer container = player.getPersistentDataContainer();
+        PlayerData data = PlayerDataManager.get(player);
 
         for (CosmeticCategory category : CosmeticCategory.values()) {
-            String id = container.get(getKey(category), PersistentDataType.STRING);
+            String id = data.getSelectedCosmetic(category);
             Cosmetic cosmetic = id == null ? null : category.getCosmetic(id);
 
             if (cosmetic == null || !cosmetic.isUnlocked(player)) {
-                container.remove(getKey(category));
+                if (id != null) data.setSelectedCosmetic(category, null);
                 continue;
             }
 
@@ -84,7 +85,7 @@ public class CosmeticManager {
         unequip(player, cosmetic.getCategory());
 
         getEquipped(player).put(cosmetic.getCategory(), cosmetic);
-        player.getPersistentDataContainer().set(getKey(cosmetic.getCategory()), PersistentDataType.STRING, cosmetic.getId());
+        PlayerDataManager.get(player).setSelectedCosmetic(cosmetic.getCategory(), cosmetic.getId());
 
         apply(player, cosmetic);
     }
@@ -92,7 +93,7 @@ public class CosmeticManager {
     public static void unequip(Player player, CosmeticCategory category) {
         Cosmetic cosmetic = getEquipped(player).remove(category);
 
-        player.getPersistentDataContainer().remove(getKey(category));
+        PlayerDataManager.get(player).setSelectedCosmetic(category, null);
 
         if (cosmetic == null) return;
 
@@ -126,6 +127,17 @@ public class CosmeticManager {
 
     public static boolean hasAnyEquipped(Player player) {
         return !getEquipped(player).isEmpty();
+    }
+
+    public static boolean owns(Player player, Cosmetic cosmetic) {
+        return PlayerDataManager.get(player).ownsCosmetic(cosmetic);
+    }
+
+    public static void addOwned(Player player, Cosmetic cosmetic) {
+        PlayerDataManager.get(player).addOwnedCosmetic(cosmetic);
+
+        // Käufe sofort speichern, nicht erst beim Verlassen
+        PlayerDataManager.save(player);
     }
 
     public static void useGadget(Player player, Gadget gadget) {
@@ -185,7 +197,7 @@ public class CosmeticManager {
 
     private static void registerPermissions() {
         PluginManager pluginManager = Bukkit.getPluginManager();
-        PermissionDefault defaultValue = LobbySystem.getInstance().getConfig().getBoolean("cosmetics.unlock-all", true)
+        PermissionDefault defaultValue = LobbySystem.getInstance().getConfig().getBoolean("cosmetics.unlock-all", false)
                 ? PermissionDefault.TRUE
                 : PermissionDefault.OP;
 
@@ -209,10 +221,6 @@ public class CosmeticManager {
 
     private static void register(PluginManager pluginManager, Permission permission) {
         if (pluginManager.getPermission(permission.getName()) == null) pluginManager.addPermission(permission);
-    }
-
-    private static NamespacedKey getKey(CosmeticCategory category) {
-        return new NamespacedKey(LobbySystem.getInstance(), "cosmetic_" + category.getId());
     }
 
     private static NamespacedKey getEntityKey() {

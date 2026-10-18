@@ -1,3 +1,15 @@
+# Verbindung zur MySQL/MariaDB. Die Tabelle "lobby" wird beim Start automatisch angelegt,
+# die Datenbank selbst muss schon existieren.
+mysql:
+  host: 'localhost'
+  port: 3306
+  database: 'lobby'
+  username: 'root'
+  password: ''
+  pool-size: 5
+  # Zusätzliche JDBC-Parameter
+  properties: 'useUnicode=true&characterEncoding=utf8&useSsl=false'
+
 spawn: {}
 
 teleporter:
@@ -15,5 +27,43 @@ cookieclicker:
   blocks: {}
 
 cosmetics:
-  # true = alle Cosmetics sind für jeden Spieler freigeschaltet
-  unlock-all: true
+  # true = alle Cosmetics sind für jeden Spieler gratis freigeschaltet (Kaufen ist dann überflüssig)
+  unlock-all: false
+
+  # Preise in Coins. 0 = gratis für alle. Fehlt ein Eintrag, kostet das Cosmetic 1000 Coins.
+  prices:
+    trail:
+      herzen: 500
+      flammen: 750
+      seelenfeuer: 1000
+      noten: 750
+      regenbogen: 2000
+      magie: 1000
+      glitzer: 1500
+      schnee: 750
+      kirschblueten: 1500
+      smaragde: 1000
+    aura:
+      heiligenschein: 2500
+      doppelhelix: 3000
+      regenwolke: 2000
+      feuerwirbel: 3500
+      sternenorbit: 4000
+      engelsfluegel: 7500
+    hat:
+      krone: 5000
+      astronaut: 1500
+      drachenkopf: 4000
+      creeper: 1000
+      piglin: 1000
+      leuchtfeuer: 3000
+      kuerbis: 750
+      melone: 500
+      schleim: 750
+      eiskopf: 1000
+    gadget:
+      feuerwerk: 1500
+      raketensprung: 2000
+      zauberstab: 3000
+      musikbox: 2500
+      konfetti: 1000

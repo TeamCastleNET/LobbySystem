@@ -2,6 +2,7 @@ package de.zcreeper.lobbysystem.listener;
 
 import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
+import de.zcreeper.lobbysystem.data.PlayerDataManager;
 import de.zcreeper.lobbysystem.items.HotbarItems;
 import de.zcreeper.lobbysystem.utils.PlayerHider;
 import de.zcreeper.lobbysystem.utils.ScoreboardManager;
@@ -10,11 +11,25 @@ import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ConnectionListener implements Listener {
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPreLogin(AsyncPlayerPreLoginEvent event) {
+        if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
+
+        PlayerDataManager.handlePreLogin(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPreLoginResult(AsyncPlayerPreLoginEvent event) {
+        PlayerDataManager.handleLoginResult(event);
+    }
 
     @EventHandler
     public void onSpawnLocation(AsyncPlayerSpawnLocationEvent event) {
@@ -39,6 +54,8 @@ public class ConnectionListener implements Listener {
         PlayerHider.handleJoin(player);
         ScoreboardManager.create(player);
 
+        PlayerDataManager.handleJoin(player);
+
         HotbarItems.getItems(player);
         CosmeticManager.load(player);
 
@@ -53,6 +70,7 @@ public class ConnectionListener implements Listener {
         PlayerHider.handleQuit(player);
         ScoreboardManager.remove(player);
         CosmeticManager.handleQuit(player);
+        PlayerDataManager.handleQuit(player);
     }
 
 }

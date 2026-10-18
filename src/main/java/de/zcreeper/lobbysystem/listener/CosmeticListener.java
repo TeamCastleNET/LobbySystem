@@ -4,8 +4,10 @@ import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.cosmetics.Cosmetic;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticCategory;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
+import de.zcreeper.lobbysystem.cosmetics.CosmeticShop;
 import de.zcreeper.lobbysystem.cosmetics.types.Gadget;
 import de.zcreeper.lobbysystem.inventories.CosmeticCategoryInventory;
+import de.zcreeper.lobbysystem.inventories.CosmeticPurchaseInventory;
 import de.zcreeper.lobbysystem.inventories.CosmeticsInventory;
 import de.zcreeper.lobbysystem.items.HotbarItems;
 import de.zcreeper.lobbysystem.utils.Sounds;
@@ -61,7 +63,8 @@ public class CosmeticListener implements Listener {
     public void onClick(InventoryClickEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
 
-        if (!(holder instanceof CosmeticsInventory) && !(holder instanceof CosmeticCategoryInventory)) return;
+        if (!(holder instanceof CosmeticsInventory) && !(holder instanceof CosmeticCategoryInventory)
+                && !(holder instanceof CosmeticPurchaseInventory)) return;
 
         event.setCancelled(true);
 
@@ -70,6 +73,11 @@ public class CosmeticListener implements Listener {
 
         if (holder instanceof CosmeticsInventory) {
             handleMainClick(player, event.getSlot());
+            return;
+        }
+
+        if (holder instanceof CosmeticPurchaseInventory purchase) {
+            handlePurchaseClick(player, purchase, event.getSlot());
             return;
         }
 
@@ -125,7 +133,8 @@ public class CosmeticListener implements Listener {
         if (cosmetic == null) return;
 
         if (!cosmetic.isUnlocked(player)) {
-            deny(player, "§cDieses Cosmetic hast du noch nicht freigeschaltet.");
+            CosmeticPurchaseInventory.open(player, cosmetic);
+            Sounds.click(player);
             return;
         }
 
@@ -138,6 +147,33 @@ public class CosmeticListener implements Listener {
         }
 
         inventory.render(player);
+    }
+
+    private void handlePurchaseClick(Player player, CosmeticPurchaseInventory inventory, int slot) {
+        Cosmetic cosmetic = inventory.getCosmetic();
+
+        if (slot == CosmeticPurchaseInventory.SLOT_CANCEL) {
+            CosmeticCategoryInventory.open(player, cosmetic.getCategory());
+            Sounds.page(player);
+            return;
+        }
+
+        if (slot != CosmeticPurchaseInventory.SLOT_CONFIRM) return;
+
+        if (!CosmeticShop.canAfford(player, cosmetic)) {
+            deny(player, "§cDu hast nicht genug Coins. §7Benötigt: §e" + CosmeticShop.format(cosmetic.getPrice()) + " Coins");
+            return;
+        }
+
+        player.closeInventory();
+
+        CosmeticShop.buy(player, cosmetic, success -> {
+            if (!success) return;
+
+            CosmeticManager.equip(player, cosmetic);
+            Sounds.equip(player);
+            CosmeticCategoryInventory.open(player, cosmetic.getCategory());
+        });
     }
 
     private void unequip(Player player, Cosmetic cosmetic) {

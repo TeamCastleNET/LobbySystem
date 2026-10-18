@@ -25,6 +25,11 @@ public class Sounds {
         play(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8F, 1.2F);
     }
 
+    public static void purchase(Player player) {
+        play(player, Sound.ENTITY_PLAYER_LEVELUP, 0.8F, 1.2F);
+        play(player, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1F, 1.5F);
+    }
+
     public static void equip(Player player) {
         play(player, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1.2F);
         play(player, Sound.ENTITY_PLAYER_LEVELUP, 0.4F, 1.8F);

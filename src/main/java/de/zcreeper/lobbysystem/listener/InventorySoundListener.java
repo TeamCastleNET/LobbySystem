@@ -2,6 +2,7 @@ package de.zcreeper.lobbysystem.listener;
 
 import de.zcreeper.lobbysystem.inventories.CookieClickerInventory;
 import de.zcreeper.lobbysystem.inventories.CosmeticCategoryInventory;
+import de.zcreeper.lobbysystem.inventories.CosmeticPurchaseInventory;
 import de.zcreeper.lobbysystem.inventories.CosmeticsInventory;
 import de.zcreeper.lobbysystem.inventories.FriendsInventory;
 import de.zcreeper.lobbysystem.inventories.TeleporterInventory;
@@ -29,6 +30,7 @@ public class InventorySoundListener implements Listener {
         return holder instanceof TeleporterInventory
                 || holder instanceof CosmeticsInventory
                 || holder instanceof CosmeticCategoryInventory
+                || holder instanceof CosmeticPurchaseInventory
                 || holder instanceof FriendsInventory
                 || holder instanceof CookieClickerInventory;
     }
