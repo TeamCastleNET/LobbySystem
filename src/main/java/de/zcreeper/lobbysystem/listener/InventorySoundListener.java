@@ -4,6 +4,8 @@ import de.zcreeper.lobbysystem.inventories.CookieClickerInventory;
 import de.zcreeper.lobbysystem.inventories.CosmeticCategoryInventory;
 import de.zcreeper.lobbysystem.inventories.CosmeticPurchaseInventory;
 import de.zcreeper.lobbysystem.inventories.CosmeticsInventory;
+import de.zcreeper.lobbysystem.inventories.FriendOptionsInventory;
+import de.zcreeper.lobbysystem.inventories.FriendRequestsInventory;
 import de.zcreeper.lobbysystem.inventories.FriendsInventory;
 import de.zcreeper.lobbysystem.inventories.TeleporterInventory;
 import de.zcreeper.lobbysystem.utils.Sounds;
@@ -32,6 +34,8 @@ public class InventorySoundListener implements Listener {
                 || holder instanceof CosmeticCategoryInventory
                 || holder instanceof CosmeticPurchaseInventory
                 || holder instanceof FriendsInventory
+                || holder instanceof FriendRequestsInventory
+                || holder instanceof FriendOptionsInventory
                 || holder instanceof CookieClickerInventory;
     }
 

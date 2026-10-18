@@ -1,6 +1,7 @@
 package de.zcreeper.lobbysystem.utils;
 
 import de.zcreeper.lobbysystem.LobbySystem;
+import de.zcreeper.lobbysystem.friends.FriendService;
 import fr.mrmicky.fastboard.FastBoard;
 import net.teamcastle.teamcastleapi.TeamCastleAPI;
 import org.bukkit.Bukkit;
@@ -45,6 +46,7 @@ public class ScoreboardManager {
         update(board);
     }
 
+
     public static void remove(Player player) {
         FastBoard board = boards.remove(player.getUniqueId());
 
@@ -57,6 +59,8 @@ public class ScoreboardManager {
     }
 
     private static void update(FastBoard board) {
+        Player player = board.getPlayer();
+
         board.updateLines(
                 "",
                 "§6Rang:",
@@ -64,6 +68,9 @@ public class ScoreboardManager {
                 " ",
                 "§6Coins:",
                 "§8» §b" + format(TeamCastleAPI.getCoinAPI().getCachedCoins(board.getPlayer().getUniqueId()).orElse(0L)),
+                "   ",
+                "§6Freunde:",
+                "§8» §a" + FriendService.getFriendsInLobby(player) + "§8/§b" + FriendService.getFriendCount(player) + " §7in der Lobby",
                 "",
                 "§6Online:",
                 "§8» §b" + format(Bukkit.getOnlinePlayers().size()),

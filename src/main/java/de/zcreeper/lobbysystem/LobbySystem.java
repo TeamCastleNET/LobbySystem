@@ -7,6 +7,7 @@ import de.zcreeper.lobbysystem.commands.SpawnCommand;
 import de.zcreeper.lobbysystem.cookieclicker.CookieClickerManager;
 import de.zcreeper.lobbysystem.cosmetics.CosmeticManager;
 import de.zcreeper.lobbysystem.data.PlayerDataManager;
+import de.zcreeper.lobbysystem.friends.FriendService;
 import de.zcreeper.lobbysystem.listener.ChatMention;
 import de.zcreeper.lobbysystem.listener.CookieClickerListener;
 import de.zcreeper.lobbysystem.listener.CosmeticListener;
@@ -50,6 +51,7 @@ public final class LobbySystem extends JavaPlugin {
         CookieClickerManager.load();
         ScoreboardManager.start();
         CosmeticManager.start();
+        FriendService.start();
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, ServerConnector.CHANNEL);
 
@@ -81,6 +83,7 @@ public final class LobbySystem extends JavaPlugin {
         getLogger().info("LobbySystem wird gestoppt.");
 
         CosmeticManager.stop();
+        FriendService.stop();
         PlayerDataManager.stop();
         DatabaseManager.disconnect();
 

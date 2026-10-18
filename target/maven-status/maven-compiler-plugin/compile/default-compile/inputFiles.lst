@@ -14,10 +14,13 @@ C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobb
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\cosmetics\types\Trail.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\data\PlayerData.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\data\PlayerDataManager.java
+C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\friends\FriendService.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\CookieClickerInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\CosmeticCategoryInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\CosmeticPurchaseInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\CosmeticsInventory.java
+C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\FriendOptionsInventory.java
+C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\FriendRequestsInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\FriendsInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\inventories\TeleporterInventory.java
 C:\Users\Michael\Documents\TeamCastle\LobbySystem\src\main\java\de\zcreeper\lobbysystem\items\HotbarItems.java

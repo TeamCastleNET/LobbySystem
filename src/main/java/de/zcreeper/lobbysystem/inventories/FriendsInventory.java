@@ -1,6 +1,8 @@
 package de.zcreeper.lobbysystem.inventories;
 
+import de.zcreeper.lobbysystem.friends.FriendService;
 import de.zcreeper.lobbysystem.utils.ItemBuilder;
+import net.teamcastle.teamcastleapi.api.friends.Friend;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -8,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +27,7 @@ public class FriendsInventory implements InventoryHolder {
     public static final int SLOT_PROFILE = 4;
     public static final int SLOT_ADD = 38;
     public static final int SLOT_REQUESTS = 40;
-    public static final int SLOT_SETTINGS = 42;
+    public static final int SLOT_OUTGOING = 42;
     public static final int SLOT_PREVIOUS = 48;
     public static final int SLOT_NEXT = 50;
 
@@ -55,25 +58,29 @@ public class FriendsInventory implements InventoryHolder {
     };
 
     private final Inventory inventory;
-    private final Map<Integer, OfflinePlayer> friends = new HashMap<>();
+    private final Map<Integer, Friend> friends = new HashMap<>();
     private final int page;
     private final int pages;
 
-    public FriendsInventory(Player player, int page) {
+    public FriendsInventory(Player player, FriendService.Overview overview, int page) {
         this.inventory = Bukkit.createInventory(this, SIZE, TITLE);
 
         fill(BUTTON_SLOTS, placeholder(Material.STONE_BUTTON));
         fill(BLACK_SLOTS, placeholder(Material.BLACK_STAINED_GLASS_PANE));
         fill(GRAY_SLOTS, placeholder(Material.GRAY_STAINED_GLASS_PANE));
 
-        List<OfflinePlayer> friendList = getFriends(player);
+        List<Friend> friendList = overview.friends();
+        int incoming = overview.incoming().size();
+        int outgoing = overview.outgoing().size();
 
         this.pages = Math.max(1, (int) Math.ceil(friendList.size() / (double) FRIEND_SLOTS.length));
         this.page = Math.max(0, Math.min(page, pages - 1));
 
+        long inLobby = friendList.stream().filter(friend -> FriendService.isInLobby(friend.uuid())).count();
+
         inventory.setItem(SLOT_PROFILE, head(player, "§6Deine Freunde",
                 "§7Freunde: §e" + friendList.size(),
-                "§7Online: §a" + friendList.stream().filter(OfflinePlayer::isOnline).count()));
+                "§7In der Lobby: §a" + inLobby));
 
         if (friendList.isEmpty()) {
             inventory.setItem(SLOT_EMPTY, new ItemBuilder(Material.SKELETON_SKULL)
@@ -85,26 +92,35 @@ public class FriendsInventory implements InventoryHolder {
         int start = this.page * FRIEND_SLOTS.length;
 
         for (int i = 0; i < FRIEND_SLOTS.length && start + i < friendList.size(); i++) {
-            OfflinePlayer friend = friendList.get(start + i);
+            Friend friend = friendList.get(start + i);
+            boolean online = FriendService.isInLobby(friend.uuid());
 
             friends.put(FRIEND_SLOTS[i], friend);
-            inventory.setItem(FRIEND_SLOTS[i], head(friend, "§6" + friend.getName(),
-                    "§7Status: " + (friend.isOnline() ? "§aOnline" : "§cOffline"),
+            inventory.setItem(FRIEND_SLOTS[i], head(Bukkit.getOfflinePlayer(friend.uuid()),
+                    (online ? "§a" : "§7") + FriendService.getName(friend.uuid()),
+                    online ? "§a● In der Lobby" : "§7● Nicht in der Lobby",
+                    "§7Freunde seit: §e" + FriendService.formatDate(friend.since()),
                     "",
-                    "§eKlicke für Optionen"));
+                    "§8» §eKlicke für Optionen"));
         }
 
         inventory.setItem(SLOT_ADD, new ItemBuilder(Material.LIME_DYE)
                 .displayname("§aFreund hinzufügen")
-                .lore("§7Sende einem Spieler", "§7eine Freundschaftsanfrage.")
+                .lore("§7Sende einem Spieler", "§7eine Freundschaftsanfrage.", "", "§8» §eKlicke §7und gib den Namen ein")
                 .build());
-        inventory.setItem(SLOT_REQUESTS, new ItemBuilder(Material.PAPER)
+
+        ItemStack requests = new ItemBuilder(Material.PAPER)
                 .displayname("§eFreundschaftsanfragen")
-                .lore("§7Offene Anfragen: §e0")
-                .build());
-        inventory.setItem(SLOT_SETTINGS, new ItemBuilder(Material.COMPARATOR)
-                .displayname("§7Einstellungen")
-                .lore("§7Lege fest, wer dir Anfragen", "§7schicken darf.")
+                .lore("§7Offene Anfragen: §e" + incoming, "", "§8» §eKlicke zum Öffnen")
+                .amount(Math.max(1, Math.min(incoming, 64)))
+                .build();
+
+        if (incoming > 0) glint(requests);
+
+        inventory.setItem(SLOT_REQUESTS, requests);
+        inventory.setItem(SLOT_OUTGOING, new ItemBuilder(Material.WRITABLE_BOOK)
+                .displayname("§7Gesendete Anfragen")
+                .lore("§7Ausstehend: §e" + outgoing, "", "§8» §eKlicke zum Öffnen")
                 .build());
 
         if (hasPreviousPage()) {
@@ -116,15 +132,11 @@ public class FriendsInventory implements InventoryHolder {
         }
     }
 
-    public static void open(Player player) {
-        open(player, 0);
+    public static void open(Player player, FriendService.Overview overview, int page) {
+        player.openInventory(new FriendsInventory(player, overview, page).getInventory());
     }
 
-    public static void open(Player player, int page) {
-        player.openInventory(new FriendsInventory(player, page).getInventory());
-    }
-
-    public OfflinePlayer getFriend(int slot) {
+    public Friend getFriend(int slot) {
         return friends.get(slot);
     }
 
@@ -145,12 +157,7 @@ public class FriendsInventory implements InventoryHolder {
         return inventory;
     }
 
-    private List<OfflinePlayer> getFriends(Player player) {
-        // Wird befüllt, sobald es das FreundeSystem gibt
-        return List.of();
-    }
-
-    private ItemStack head(OfflinePlayer owner, String name, String... lore) {
+    static ItemStack head(OfflinePlayer owner, String name, String... lore) {
         ItemStack item = new ItemBuilder(Material.PLAYER_HEAD).displayname(name).lore(lore).build();
         SkullMeta meta = (SkullMeta) item.getItemMeta();
 
@@ -158,6 +165,13 @@ public class FriendsInventory implements InventoryHolder {
         item.setItemMeta(meta);
 
         return item;
+    }
+
+    private static void glint(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+
+        meta.setEnchantmentGlintOverride(true);
+        item.setItemMeta(meta);
     }
 
     private void fill(int[] slots, ItemStack item) {

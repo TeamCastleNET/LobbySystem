@@ -10,7 +10,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class ChatMention implements Listener {
 
     @SuppressWarnings("deprecation")
-    @EventHandler
+    // ignoreCancelled: Namen, die für "Freund hinzufügen" eingegeben werden, sollen niemanden anpingen
+    @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
         final String[] message = event.getMessage().split(" ");
 

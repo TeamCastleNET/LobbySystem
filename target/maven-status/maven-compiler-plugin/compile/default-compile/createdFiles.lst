@@ -7,6 +7,7 @@ de\zcreeper\lobbysystem\utils\ItemBuilder.class
 de\zcreeper\lobbysystem\cosmetics\types\Gadget$2.class
 de\zcreeper\lobbysystem\utils\ScoreboardManager.class
 de\zcreeper\lobbysystem\commands\SetSpawnCommand.class
+de\zcreeper\lobbysystem\friends\FriendService$1.class
 de\zcreeper\lobbysystem\cookieclicker\CookieClickerManager.class
 de\zcreeper\lobbysystem\inventories\FriendsInventory.class
 de\zcreeper\lobbysystem\cosmetics\types\Aura.class
@@ -20,6 +21,7 @@ de\zcreeper\lobbysystem\listener\CookieClickerListener.class
 de\zcreeper\lobbysystem\listener\CosmeticListener.class
 de\zcreeper\lobbysystem\listener\JumpPadListener.class
 de\zcreeper\lobbysystem\utils\ServerConnector.class
+de\zcreeper\lobbysystem\inventories\FriendRequestsInventory.class
 de\zcreeper\lobbysystem\inventories\CosmeticPurchaseInventory.class
 de\zcreeper\lobbysystem\listener\ProtectionListener.class
 de\zcreeper\lobbysystem\cosmetics\CosmeticShop.class
@@ -29,6 +31,7 @@ de\zcreeper\lobbysystem\cosmetics\Cosmetic.class
 de\zcreeper\lobbysystem\listener\ConnectionListener.class
 de\zcreeper\lobbysystem\utils\RankProvider.class
 de\zcreeper\lobbysystem\data\PlayerData.class
+de\zcreeper\lobbysystem\inventories\FriendOptionsInventory.class
 de\zcreeper\lobbysystem\commands\SpawnCommand.class
 de\zcreeper\lobbysystem\utils\PlayerHider.class
 de\zcreeper\lobbysystem\cosmetics\CosmeticEffects.class
@@ -45,7 +48,9 @@ de\zcreeper\lobbysystem\listener\TeleporterListener.class
 de\zcreeper\lobbysystem\utils\DatabaseManager.class
 de\zcreeper\lobbysystem\utils\Sounds.class
 de\zcreeper\lobbysystem\inventories\CosmeticsInventory.class
+de\zcreeper\lobbysystem\friends\FriendService.class
 de\zcreeper\lobbysystem\items\HotbarItems.class
 de\zcreeper\lobbysystem\cosmetics\types\Hat.class
+de\zcreeper\lobbysystem\friends\FriendService$Overview.class
 de\zcreeper\lobbysystem\utils\SpawnManager.class
 de\zcreeper\lobbysystem\data\PlayerDataManager.class
