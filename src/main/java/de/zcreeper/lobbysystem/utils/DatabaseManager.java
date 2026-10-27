@@ -11,6 +11,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -167,6 +172,52 @@ public class DatabaseManager {
             statement.setString(5, data.serializeSelected());
             statement.executeUpdate();
         }
+    }
+
+    // Namen zu UUIDs aus der lobby-Tabelle. Unbekannte UUIDs fehlen in der Map.
+    public static CompletableFuture<Map<UUID, String>> loadNames(Collection<UUID> uuids) {
+        if (uuids.isEmpty() || executor == null) return CompletableFuture.completedFuture(Map.of());
+
+        return CompletableFuture.supplyAsync(() -> {
+            Map<UUID, String> names = new HashMap<>();
+            String placeholders = String.join(",", Collections.nCopies(uuids.size(), "?"));
+
+            try (Connection connection = dataSource.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(
+                         "SELECT uuid, name FROM " + TABLE + " WHERE name IS NOT NULL AND uuid IN (" + placeholders + ")")) {
+                int index = 1;
+
+                for (UUID uuid : uuids) statement.setString(index++, uuid.toString());
+
+                try (ResultSet result = statement.executeQuery()) {
+                    while (result.next()) names.put(UUID.fromString(result.getString("uuid")), result.getString("name"));
+                }
+            } catch (SQLException exception) {
+                LobbySystem.getInstance().getLogger().warning("Laden von Spielernamen fehlgeschlagen: " + exception.getMessage());
+            }
+
+            return names;
+        }, executor);
+    }
+
+    // Sucht die UUID zu einem Namen (Groß-/Kleinschreibung egal) unter allen Spielern, die schon in der Lobby waren
+    public static CompletableFuture<Optional<UUID>> findUuidByName(String name) {
+        if (executor == null) return CompletableFuture.completedFuture(Optional.empty());
+
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = dataSource.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(
+                         "SELECT uuid FROM " + TABLE + " WHERE name = ? ORDER BY updated_at DESC LIMIT 1")) {
+                statement.setString(1, name);
+
+                try (ResultSet result = statement.executeQuery()) {
+                    return result.next() ? Optional.of(UUID.fromString(result.getString("uuid"))) : Optional.<UUID>empty();
+                }
+            } catch (SQLException exception) {
+                LobbySystem.getInstance().getLogger().warning("Suche nach " + name + " fehlgeschlagen: " + exception.getMessage());
+                return Optional.<UUID>empty();
+            }
+        }, executor);
     }
 
     public static CompletableFuture<Void> saveAsync(PlayerData data) {

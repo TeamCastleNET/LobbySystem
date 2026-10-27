@@ -4,7 +4,6 @@ import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.cookieclicker.CookieClickerManager;
 import de.zcreeper.lobbysystem.inventories.CookieClickerInventory;
 import de.zcreeper.lobbysystem.utils.Sounds;
-import net.teamcastle.teamcastleapi.TeamCastleAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -97,11 +96,8 @@ public class CookieClickerListener implements Listener {
         if (event.getClickedInventory() != event.getInventory()) return;
 
         if (event.getSlot() == CookieClickerInventory.SLOT_PAYOUT) {
-            // Kommt, sobald es das Coins-System gibt
             player.closeInventory();
-            Sounds.error(player);
-            TeamCastleAPI.getCoinAPI().addCoins(player.getUniqueId(), 100);
-            player.sendMessage(LobbySystem.getPrefix() + "§7Du hast §e100 Coins§7 erhalten.");
+            CookieClickerManager.payout(player);
             return;
         }
 

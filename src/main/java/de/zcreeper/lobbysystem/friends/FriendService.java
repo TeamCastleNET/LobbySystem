@@ -1,23 +1,29 @@
 package de.zcreeper.lobbysystem.friends;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import de.zcreeper.lobbysystem.LobbySystem;
 import de.zcreeper.lobbysystem.inventories.FriendOptionsInventory;
 import de.zcreeper.lobbysystem.inventories.FriendRequestsInventory;
 import de.zcreeper.lobbysystem.inventories.FriendsInventory;
+import de.zcreeper.lobbysystem.utils.DatabaseManager;
 import de.zcreeper.lobbysystem.utils.Sounds;
 import net.teamcastle.teamcastleapi.TeamCastleAPI;
 import net.teamcastle.teamcastleapi.api.friends.Friend;
 import net.teamcastle.teamcastleapi.api.friends.FriendAPI;
 import net.teamcastle.teamcastleapi.api.friends.FriendRequest;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,10 +48,19 @@ public class FriendService {
     // Spieler -> UUIDs seiner Freunde, damit das Scoreboard nicht jede Sekunde die Datenbank fragt
     private static final Map<UUID, Set<UUID>> friendCache = new ConcurrentHashMap<>();
 
+    /*
+    Der Lobby-Server behält keine Spielerdaten von Offline-Spielern. Namen kommen deshalb aus der
+    lobby-Tabelle und Skins (Texturen) werden gemerkt, sobald jemand joint, oder bei Mojang nachgeladen.
+     */
+    private static final Map<UUID, String> names = new ConcurrentHashMap<>();
+    private static final Map<UUID, PlayerProfile> profiles = new ConcurrentHashMap<>();
+    private static final Set<UUID> pendingProfiles = ConcurrentHashMap.newKeySet();
+
     private static BukkitTask refreshTask;
 
     public static void start() {
         Bukkit.getOnlinePlayers().forEach(player -> {
+            rememberProfile(player);
             friendCache.put(player.getUniqueId(), Set.of());
             refreshCache(player.getUniqueId());
         });
@@ -92,18 +107,28 @@ public class FriendService {
         CompletableFuture<List<FriendRequest>> outgoing = api().getOutgoingRequests(uuid);
 
         CompletableFuture<Overview> overview = CompletableFuture.allOf(friends, incoming, outgoing)
+                .thenCompose(ignored -> loadMissingNames(friends.join().stream().map(Friend::uuid).toList()))
                 .thenApply(ignored -> new Overview(sortFriends(friends.join()), incoming.join(), outgoing.join()));
 
         friends.thenAccept(list -> updateCache(uuid, list));
 
-        sync(player, overview, data -> FriendsInventory.open(player, data, page));
+        sync(player, overview, data -> {
+            FriendsInventory.open(player, data, page);
+            loadMissingSkins(player, data.friends().stream().map(Friend::uuid).toList());
+        });
     }
 
     public static void openRequests(Player player, boolean incoming) {
         UUID uuid = player.getUniqueId();
         CompletableFuture<List<FriendRequest>> requests = incoming ? api().getIncomingRequests(uuid) : api().getOutgoingRequests(uuid);
 
-        sync(player, requests, list -> FriendRequestsInventory.open(player, list, incoming));
+        CompletableFuture<List<FriendRequest>> withNames = requests
+                .thenCompose(list -> loadMissingNames(otherPlayers(list, incoming)).thenApply(ignored -> list));
+
+        sync(player, withNames, list -> {
+            FriendRequestsInventory.open(player, list, incoming);
+            loadMissingSkins(player, otherPlayers(list, incoming));
+        });
     }
 
     /*
@@ -147,16 +172,25 @@ public class FriendService {
     }
 
     public static void sendRequest(Player player, String name) {
-        UUID target = findUuid(name);
+        Player online = Bukkit.getPlayerExact(name);
 
-        if (target == null) {
-            Sounds.error(player);
-            player.sendMessage(LobbySystem.getPrefix() + "§cDer Spieler §e" + name + " §cwurde nicht gefunden.");
+        if (online != null) {
+            sendRequest(player, online.getUniqueId(), online.getName());
             return;
         }
 
-        String targetName = getName(target);
+        // Spieler auf anderen Servern des Netzwerks findet die Lobby über die lobby-Tabelle
+        sync(player, DatabaseManager.findUuidByName(name), uuid -> {
+            if (uuid.isEmpty()) {
+                deny(player, "§cDer Spieler §e" + name + " §cwurde nicht gefunden.");
+                return;
+            }
 
+            sync(player, loadMissingNames(List.of(uuid.get())), ignored -> sendRequest(player, uuid.get(), getName(uuid.get())));
+        });
+    }
+
+    private static void sendRequest(Player player, UUID target, String targetName) {
         sync(player, api().sendRequest(player.getUniqueId(), target), result -> {
             switch (result) {
                 case SENT -> {
@@ -259,6 +293,7 @@ public class FriendService {
 
     public static void openOptions(Player player, Friend friend) {
         FriendOptionsInventory.open(player, friend);
+        loadMissingSkins(player, List.of(friend.uuid()));
     }
 
     /*
@@ -266,6 +301,7 @@ public class FriendService {
      */
 
     public static void handleJoin(Player player) {
+        rememberProfile(player);
         friendCache.put(player.getUniqueId(), Set.of());
         refreshCache(player.getUniqueId());
 
@@ -287,9 +323,32 @@ public class FriendService {
      */
 
     public static String getName(UUID uuid) {
-        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        Player online = Bukkit.getPlayer(uuid);
 
-        return player.getName() == null ? "Unbekannt" : player.getName();
+        if (online != null) return online.getName();
+
+        String cached = names.get(uuid);
+
+        if (cached != null) return cached;
+
+        String offline = Bukkit.getOfflinePlayer(uuid).getName();
+
+        return offline == null ? "Unbekannt" : offline;
+    }
+
+    // Profil für Köpfe im GUI - mit Skin, sobald er bekannt ist
+    public static PlayerProfile getProfile(UUID uuid) {
+        Player online = Bukkit.getPlayer(uuid);
+
+        if (online != null) return online.getPlayerProfile();
+
+        PlayerProfile cached = profiles.get(uuid);
+
+        if (cached != null) return cached;
+
+        String name = getName(uuid);
+
+        return Bukkit.createProfile(uuid, name.equals("Unbekannt") ? null : name);
     }
 
     public static boolean isInLobby(UUID uuid) {
@@ -300,15 +359,94 @@ public class FriendService {
         return DATE_FORMAT.format(Instant.ofEpochMilli(millis));
     }
 
-    // Spieler auf anderen Servern des Netzwerks kennt die Lobby nur, wenn sie schon einmal hier waren
-    private static UUID findUuid(String name) {
-        Player online = Bukkit.getPlayerExact(name);
+    private static void rememberProfile(Player player) {
+        names.put(player.getUniqueId(), player.getName());
 
-        if (online != null) return online.getUniqueId();
+        PlayerProfile profile = player.getPlayerProfile();
 
-        OfflinePlayer cached = Bukkit.getOfflinePlayerIfCached(name);
+        if (profile.hasTextures()) profiles.put(player.getUniqueId(), profile);
+    }
 
-        return cached == null ? null : cached.getUniqueId();
+    private static List<UUID> otherPlayers(List<FriendRequest> requests, boolean incoming) {
+        return requests.stream().map(request -> incoming ? request.sender() : request.target()).toList();
+    }
+
+    private static CompletableFuture<Void> loadMissingNames(Collection<UUID> uuids) {
+        List<UUID> missing = uuids.stream()
+                .filter(uuid -> !names.containsKey(uuid) && Bukkit.getPlayer(uuid) == null)
+                .toList();
+
+        return DatabaseManager.loadNames(missing)
+                .thenAccept(names::putAll)
+                // Wer noch nie in der Lobby war, steht nicht in der Tabelle - dann fragen wir Mojang (eigener Thread, blockiert)
+                .thenRunAsync(() -> {
+                    for (UUID uuid : missing) {
+                        if (names.containsKey(uuid)) continue;
+
+                        try {
+                            PlayerProfile profile = Bukkit.createProfile(uuid);
+
+                            if (!profile.complete(true) || profile.getName() == null) continue;
+
+                            names.put(uuid, profile.getName());
+                            if (profile.hasTextures()) profiles.put(uuid, profile);
+                        } catch (Exception exception) {
+                            LobbySystem.getInstance().getLogger().warning("Name von " + uuid + " konnte nicht geladen werden: " + exception.getMessage());
+                        }
+                    }
+                });
+    }
+
+    /*
+    Fehlende Skins bei Mojang nachladen (blockiert, deshalb asynchron) und danach die Köpfe
+    im offenen Menü austauschen. Jeder Skin wird nur einmal pro Serverstart geladen.
+     */
+    private static void loadMissingSkins(Player player, Collection<UUID> uuids) {
+        Set<UUID> missing = new HashSet<>();
+
+        for (UUID uuid : uuids) {
+            if (Bukkit.getPlayer(uuid) == null && !profiles.containsKey(uuid) && pendingProfiles.add(uuid)) missing.add(uuid);
+        }
+
+        if (missing.isEmpty()) return;
+
+        Bukkit.getScheduler().runTaskAsynchronously(LobbySystem.getInstance(), () -> {
+            for (UUID uuid : missing) {
+                try {
+                    String name = names.get(uuid);
+                    PlayerProfile profile = Bukkit.createProfile(uuid, name);
+
+                    if (profile.complete(true) && profile.hasTextures()) profiles.put(uuid, profile);
+                } catch (Exception exception) {
+                    LobbySystem.getInstance().getLogger().warning("Skin von " + uuid + " konnte nicht geladen werden: " + exception.getMessage());
+                } finally {
+                    pendingProfiles.remove(uuid);
+                }
+            }
+
+            Bukkit.getScheduler().runTask(LobbySystem.getInstance(), () -> refreshHeads(player));
+        });
+    }
+
+    private static void refreshHeads(Player player) {
+        if (!player.isOnline()) return;
+
+        InventoryHolder holder = player.getOpenInventory().getTopInventory().getHolder();
+
+        if (!(holder instanceof FriendsInventory) && !(holder instanceof FriendRequestsInventory)
+                && !(holder instanceof FriendOptionsInventory)) return;
+
+        for (ItemStack item : holder.getInventory().getContents()) {
+            if (item == null || !(item.getItemMeta() instanceof SkullMeta meta) || meta.getPlayerProfile() == null) continue;
+
+            UUID uuid = meta.getPlayerProfile().getId();
+            PlayerProfile profile = uuid == null ? null : profiles.get(uuid);
+
+            if (profile == null || meta.getPlayerProfile().hasTextures()) continue;
+
+            meta.setPlayerProfile(profile);
+            item.setItemMeta(meta);
+        }
     }
 
     // Nur für Spieler, die gerade in der Lobby sind - für alle anderen gibt es keinen Eintrag

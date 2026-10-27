@@ -5,7 +5,6 @@ import de.zcreeper.lobbysystem.utils.ItemBuilder;
 import net.teamcastle.teamcastleapi.api.friends.Friend;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -17,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class FriendsInventory implements InventoryHolder {
 
@@ -78,7 +78,7 @@ public class FriendsInventory implements InventoryHolder {
 
         long inLobby = friendList.stream().filter(friend -> FriendService.isInLobby(friend.uuid())).count();
 
-        inventory.setItem(SLOT_PROFILE, head(player, "§6Deine Freunde",
+        inventory.setItem(SLOT_PROFILE, head(player.getUniqueId(), "§6Deine Freunde",
                 "§7Freunde: §e" + friendList.size(),
                 "§7In der Lobby: §a" + inLobby));
 
@@ -96,7 +96,7 @@ public class FriendsInventory implements InventoryHolder {
             boolean online = FriendService.isInLobby(friend.uuid());
 
             friends.put(FRIEND_SLOTS[i], friend);
-            inventory.setItem(FRIEND_SLOTS[i], head(Bukkit.getOfflinePlayer(friend.uuid()),
+            inventory.setItem(FRIEND_SLOTS[i], head(friend.uuid(),
                     (online ? "§a" : "§7") + FriendService.getName(friend.uuid()),
                     online ? "§a● In der Lobby" : "§7● Nicht in der Lobby",
                     "§7Freunde seit: §e" + FriendService.formatDate(friend.since()),
@@ -157,11 +157,11 @@ public class FriendsInventory implements InventoryHolder {
         return inventory;
     }
 
-    static ItemStack head(OfflinePlayer owner, String name, String... lore) {
+    static ItemStack head(UUID owner, String name, String... lore) {
         ItemStack item = new ItemBuilder(Material.PLAYER_HEAD).displayname(name).lore(lore).build();
         SkullMeta meta = (SkullMeta) item.getItemMeta();
 
-        meta.setOwningPlayer(owner);
+        meta.setPlayerProfile(FriendService.getProfile(owner));
         item.setItemMeta(meta);
 
         return item;

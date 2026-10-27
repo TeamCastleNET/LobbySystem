@@ -58,12 +58,12 @@ public class FriendRequestsInventory implements InventoryHolder {
 
             requests.put(REQUEST_SLOTS[i], other);
             inventory.setItem(REQUEST_SLOTS[i], incoming
-                    ? FriendsInventory.head(Bukkit.getOfflinePlayer(other), "§e" + FriendService.getName(other),
+                    ? FriendsInventory.head(other, "§e" + FriendService.getName(other),
                     "§7Gesendet am: §e" + FriendService.formatDate(request.createdAt()),
                     "",
                     "§8» §aLinksklick §7zum Annehmen",
                     "§8» §cRechtsklick §7zum Ablehnen")
-                    : FriendsInventory.head(Bukkit.getOfflinePlayer(other), "§7" + FriendService.getName(other),
+                    : FriendsInventory.head(other, "§7" + FriendService.getName(other),
                     "§7Gesendet am: §e" + FriendService.formatDate(request.createdAt()),
                     "",
                     "§8» §cKlicke §7zum Zurückziehen"));

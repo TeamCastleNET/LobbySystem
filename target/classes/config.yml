@@ -24,6 +24,8 @@ scoreboard:
   ip: 'teamcastle.net'
 
 cookieclicker:
+  # So viele Cookies ergeben 1 Coin. Übrige Cookies bleiben beim Auszahlen erhalten.
+  cookies-per-coin: 100
   blocks: {}
 
 cosmetics:

@@ -61,7 +61,7 @@ public class FriendOptionsInventory implements InventoryHolder {
         boolean online = FriendService.isInLobby(friend.uuid());
         String name = FriendService.getName(friend.uuid());
 
-        inventory.setItem(SLOT_PROFILE, FriendsInventory.head(Bukkit.getOfflinePlayer(friend.uuid()),
+        inventory.setItem(SLOT_PROFILE, FriendsInventory.head(friend.uuid(),
                 (online ? "§a" : "§7") + name,
                 online ? "§a● In der Lobby" : "§7● Nicht in der Lobby",
                 "§7Freunde seit: §e" + FriendService.formatDate(friend.since())));

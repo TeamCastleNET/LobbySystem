@@ -59,9 +59,20 @@ public class CookieClickerInventory implements InventoryHolder {
                 .displayname("§6Deine Cookies")
                 .lore("", "§8» §e" + CookieClickerManager.format(CookieClickerManager.getCookies(player)) + " §7Cookies")
                 .build());
+
+        long rate = CookieClickerManager.getCookiesPerCoin();
+        long coins = CookieClickerManager.getPayoutCoins(player);
+
         inventory.setItem(SLOT_PAYOUT, new ItemBuilder(Material.GOLD_INGOT)
                 .displayname("§bIn Coins auszahlen")
-                .lore("", "§7Tausche deine Cookies", "§7gegen Coins ein.", "", "§8» §eKlicke §7zum Auszahlen")
+                .lore(
+                        "",
+                        "§7Kurs: §e" + CookieClickerManager.format(rate) + " Cookies §8= §b1 Coin",
+                        "§7Du bekommst: §b" + CookieClickerManager.format(coins) + " Coins",
+                        "§7Abgezogen werden: §e" + CookieClickerManager.format(coins * rate) + " Cookies",
+                        "",
+                        coins > 0 ? "§8» §eKlicke §7zum Auszahlen" : "§8» §cNoch nicht genug Cookies"
+                )
                 .build());
     }
 
