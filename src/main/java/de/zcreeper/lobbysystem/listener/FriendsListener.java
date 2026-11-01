@@ -106,7 +106,7 @@ public class FriendsListener implements Listener {
                 if (friend == null) return;
 
                 Sounds.click(player);
-                FriendService.openOptions(player, friend);
+                FriendService.openOptionsWithStatus(player, friend);
             }
         }
     }
@@ -140,8 +140,8 @@ public class FriendsListener implements Listener {
                 FriendService.openOverview(player, 0);
             }
             case FriendOptionsInventory.SLOT_TELEPORT -> {
-                if (FriendService.isInLobby(friend)) {
-                    FriendService.teleport(player, friend);
+                if (FriendService.getServer(friend) != null) {
+                    FriendService.jumpTo(player, friend);
                 } else {
                     Sounds.error(player);
                 }

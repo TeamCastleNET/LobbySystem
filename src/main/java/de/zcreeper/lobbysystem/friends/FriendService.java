@@ -6,6 +6,8 @@ import de.zcreeper.lobbysystem.inventories.FriendOptionsInventory;
 import de.zcreeper.lobbysystem.inventories.FriendRequestsInventory;
 import de.zcreeper.lobbysystem.inventories.FriendsInventory;
 import de.zcreeper.lobbysystem.utils.DatabaseManager;
+import de.zcreeper.lobbysystem.utils.NetworkStatus;
+import de.zcreeper.lobbysystem.utils.ServerConnector;
 import de.zcreeper.lobbysystem.utils.Sounds;
 import net.teamcastle.teamcastleapi.TeamCastleAPI;
 import net.teamcastle.teamcastleapi.api.friends.Friend;
@@ -108,14 +110,19 @@ public class FriendService {
 
         CompletableFuture<Overview> overview = CompletableFuture.allOf(friends, incoming, outgoing)
                 .thenCompose(ignored -> loadMissingNames(friends.join().stream().map(Friend::uuid).toList()))
-                .thenApply(ignored -> new Overview(sortFriends(friends.join()), incoming.join(), outgoing.join()));
+                .thenApply(ignored -> new Overview(friends.join(), incoming.join(), outgoing.join()));
 
         friends.thenAccept(list -> updateCache(uuid, list));
 
-        sync(player, overview, data -> {
-            FriendsInventory.open(player, data, page);
-            loadMissingSkins(player, data.friends().stream().map(Friend::uuid).toList());
-        });
+        // Erst beim Proxy nachfragen, wo die Freunde gerade sind - danach sortieren und öffnen
+        sync(player, overview, data -> queryServers(player, data.friends(), () -> {
+            if (!player.isOnline()) return;
+
+            Overview sorted = new Overview(sortFriends(data.friends()), data.incoming(), data.outgoing());
+
+            FriendsInventory.open(player, sorted, page);
+            loadMissingSkins(player, sorted.friends().stream().map(Friend::uuid).toList());
+        }));
     }
 
     public static void openRequests(Player player, boolean incoming) {
@@ -276,19 +283,41 @@ public class FriendService {
         });
     }
 
-    public static void teleport(Player player, UUID friend) {
-        Player target = Bukkit.getPlayer(friend);
+    /*
+    Zum Server eines Freundes springen. Innerhalb der Lobby gibt es keinen Teleport.
+    Vorher wird der Server noch einmal frisch abgefragt, falls der Freund inzwischen gewechselt hat.
+     */
+    public static void jumpTo(Player player, UUID friend) {
+        String name = getName(friend);
 
         player.closeInventory();
 
-        if (target == null) {
-            deny(player, "§e" + getName(friend) + " §cist gerade nicht in der Lobby.");
+        if (isInLobby(friend)) {
+            deny(player, "§e" + name + " §cist auch in der Lobby.");
             return;
         }
 
-        player.teleport(target);
-        Sounds.teleport(player);
-        player.sendMessage(LobbySystem.getPrefix() + "§7Du wurdest zu §e" + target.getName() + " §7teleportiert.");
+        NetworkStatus.query(player, List.of(name), () -> {
+            if (!player.isOnline()) return;
+
+            String server = getServer(friend);
+
+            if (server == null) {
+                deny(player, "§e" + name + " §cist gerade nicht online.");
+                return;
+            }
+
+            ServerConnector.connectToServer(player, server);
+            Sounds.connect(player);
+            player.sendMessage(LobbySystem.getPrefix() + "§7Du wirst zu §e" + name + " §7auf "
+                    + ServerConnector.getDisplayName(server) + " §7verbunden...");
+        });
+    }
+
+    public static void openOptionsWithStatus(Player player, Friend friend) {
+        queryServers(player, List.of(friend), () -> {
+            if (player.isOnline()) openOptions(player, friend);
+        });
     }
 
     public static void openOptions(Player player, Friend friend) {
@@ -353,6 +382,30 @@ public class FriendService {
 
     public static boolean isInLobby(UUID uuid) {
         return Bukkit.getPlayer(uuid) != null;
+    }
+
+    // Server auf dem Proxy, auf dem der Freund gerade ist - null, wenn er in der Lobby oder offline ist
+    public static String getServer(UUID uuid) {
+        if (isInLobby(uuid)) return null;
+
+        String name = getName(uuid);
+
+        return name.equals("Unbekannt") ? null : NetworkStatus.getServer(name);
+    }
+
+    public static String getStatusLine(UUID uuid) {
+        if (isInLobby(uuid)) return "§a● In der Lobby";
+
+        String server = getServer(uuid);
+
+        return server == null ? "§7● Offline" : "§e● Auf " + ServerConnector.getDisplayName(server);
+    }
+
+    // Farbe des Namens: grün in der Lobby, gelb auf einem anderen Server, grau offline
+    public static String getNameColor(UUID uuid) {
+        if (isInLobby(uuid)) return "§a";
+
+        return getServer(uuid) == null ? "§7" : "§e";
     }
 
     public static String formatDate(long millis) {
@@ -461,9 +514,22 @@ public class FriendService {
         friendCache.replace(uuid, friends.stream().map(Friend::uuid).collect(Collectors.toUnmodifiableSet()));
     }
 
+    // Fragt für alle Freunde außerhalb der Lobby den Server ab und ruft danach den Callback auf
+    private static void queryServers(Player player, List<Friend> friends, Runnable callback) {
+        List<String> names = friends.stream()
+                .map(Friend::uuid)
+                .filter(uuid -> !isInLobby(uuid))
+                .map(FriendService::getName)
+                .filter(name -> !name.equals("Unbekannt"))
+                .toList();
+
+        NetworkStatus.query(player, names, callback);
+    }
+
+    // Reihenfolge: in der Lobby, auf einem anderen Server, offline - jeweils alphabetisch
     private static List<Friend> sortFriends(List<Friend> friends) {
         return friends.stream()
-                .sorted(Comparator.comparing((Friend friend) -> !isInLobby(friend.uuid()))
+                .sorted(Comparator.comparingInt((Friend friend) -> isInLobby(friend.uuid()) ? 0 : getServer(friend.uuid()) != null ? 1 : 2)
                         .thenComparing(friend -> getName(friend.uuid()), String.CASE_INSENSITIVE_ORDER))
                 .toList();
     }

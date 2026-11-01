@@ -2,6 +2,7 @@ package de.zcreeper.lobbysystem.inventories;
 
 import de.zcreeper.lobbysystem.friends.FriendService;
 import de.zcreeper.lobbysystem.utils.ItemBuilder;
+import de.zcreeper.lobbysystem.utils.ServerConnector;
 import net.teamcastle.teamcastleapi.api.friends.Friend;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -58,23 +59,35 @@ public class FriendOptionsInventory implements InventoryHolder {
     }
 
     public void render() {
-        boolean online = FriendService.isInLobby(friend.uuid());
         String name = FriendService.getName(friend.uuid());
+        String server = FriendService.getServer(friend.uuid());
 
         inventory.setItem(SLOT_PROFILE, FriendsInventory.head(friend.uuid(),
-                (online ? "§a" : "§7") + name,
-                online ? "§a● In der Lobby" : "§7● Nicht in der Lobby",
+                FriendService.getNameColor(friend.uuid()) + name,
+                FriendService.getStatusLine(friend.uuid()),
                 "§7Freunde seit: §e" + FriendService.formatDate(friend.since())));
 
-        inventory.setItem(SLOT_TELEPORT, online
-                ? new ItemBuilder(Material.ENDER_PEARL)
-                .displayname("§bTeleportieren")
-                .lore("§7Teleportiere dich zu §e" + name + "§7.", "", "§8» §eKlicke zum Teleportieren")
-                .build()
-                : new ItemBuilder(Material.GRAY_DYE)
-                .displayname("§7Teleportieren")
-                .lore("§e" + name + " §7ist gerade", "§7nicht in der Lobby.")
-                .build());
+        ItemStack teleport;
+
+        if (server != null) {
+            teleport = new ItemBuilder(Material.ENDER_PEARL)
+                    .displayname("§bNachspringen")
+                    .lore("§7Verbinde dich mit " + ServerConnector.getDisplayName(server), "§7und spiele mit §e" + name + "§7.",
+                            "", "§8» §eKlicke zum Verbinden")
+                    .build();
+        } else if (FriendService.isInLobby(friend.uuid())) {
+            teleport = new ItemBuilder(Material.GRAY_DYE)
+                    .displayname("§7Nachspringen")
+                    .lore("§e" + name + " §7ist auch in der Lobby.")
+                    .build();
+        } else {
+            teleport = new ItemBuilder(Material.GRAY_DYE)
+                    .displayname("§7Nachspringen")
+                    .lore("§e" + name + " §7ist gerade offline.")
+                    .build();
+        }
+
+        inventory.setItem(SLOT_TELEPORT, teleport);
 
         inventory.setItem(SLOT_REMOVE, confirmRemove
                 ? new ItemBuilder(Material.TNT)

@@ -19,6 +19,7 @@ import de.zcreeper.lobbysystem.listener.ProtectionListener;
 import de.zcreeper.lobbysystem.listener.TeleporterListener;
 import de.zcreeper.lobbysystem.listener.VisibilityListener;
 import de.zcreeper.lobbysystem.utils.DatabaseManager;
+import de.zcreeper.lobbysystem.utils.NetworkStatus;
 import de.zcreeper.lobbysystem.utils.ScoreboardManager;
 import de.zcreeper.lobbysystem.utils.ServerConnector;
 import de.zcreeper.lobbysystem.utils.SpawnManager;
@@ -54,6 +55,7 @@ public final class LobbySystem extends JavaPlugin {
         FriendService.start();
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, ServerConnector.CHANNEL);
+        getServer().getMessenger().registerIncomingPluginChannel(this, ServerConnector.CHANNEL, new NetworkStatus());
 
         registerCommand("setspawn", new SetSpawnCommand());
         registerCommand("spawn", new SpawnCommand());

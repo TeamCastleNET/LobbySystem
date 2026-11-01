@@ -77,9 +77,11 @@ public class FriendsInventory implements InventoryHolder {
         this.page = Math.max(0, Math.min(page, pages - 1));
 
         long inLobby = friendList.stream().filter(friend -> FriendService.isInLobby(friend.uuid())).count();
+        long onOtherServer = friendList.stream().filter(friend -> FriendService.getServer(friend.uuid()) != null).count();
 
         inventory.setItem(SLOT_PROFILE, head(player.getUniqueId(), "§6Deine Freunde",
                 "§7Freunde: §e" + friendList.size(),
+                "§7Online: §a" + (inLobby + onOtherServer),
                 "§7In der Lobby: §a" + inLobby));
 
         if (friendList.isEmpty()) {
@@ -93,12 +95,11 @@ public class FriendsInventory implements InventoryHolder {
 
         for (int i = 0; i < FRIEND_SLOTS.length && start + i < friendList.size(); i++) {
             Friend friend = friendList.get(start + i);
-            boolean online = FriendService.isInLobby(friend.uuid());
 
             friends.put(FRIEND_SLOTS[i], friend);
             inventory.setItem(FRIEND_SLOTS[i], head(friend.uuid(),
-                    (online ? "§a" : "§7") + FriendService.getName(friend.uuid()),
-                    online ? "§a● In der Lobby" : "§7● Nicht in der Lobby",
+                    FriendService.getNameColor(friend.uuid()) + FriendService.getName(friend.uuid()),
+                    FriendService.getStatusLine(friend.uuid()),
                     "§7Freunde seit: §e" + FriendService.formatDate(friend.since()),
                     "",
                     "§8» §eKlicke für Optionen"));

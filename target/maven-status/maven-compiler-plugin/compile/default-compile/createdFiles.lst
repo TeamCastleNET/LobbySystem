@@ -1,9 +1,11 @@
 de\zcreeper\lobbysystem\cosmetics\CosmeticManager.class
 de\zcreeper\lobbysystem\cosmetics\types\Trail.class
+de\zcreeper\lobbysystem\utils\NetworkStatus.class
 de\zcreeper\lobbysystem\listener\InventorySoundListener.class
 de\zcreeper\lobbysystem\inventories\CookieClickerInventory.class
 de\zcreeper\lobbysystem\LobbySystem.class
 de\zcreeper\lobbysystem\utils\ItemBuilder.class
+de\zcreeper\lobbysystem\utils\NetworkStatus$Request.class
 de\zcreeper\lobbysystem\cosmetics\types\Gadget$2.class
 de\zcreeper\lobbysystem\utils\ScoreboardManager.class
 de\zcreeper\lobbysystem\commands\SetSpawnCommand.class
